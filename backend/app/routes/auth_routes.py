@@ -36,6 +36,12 @@ async def staff_login(payload: StaffSignInRequest):
     return sign_in_staff_account(payload)
 
 
+@router.post("/staff/login", response_model=AuthSessionResponse)
+async def staff_login_alias(payload: StaffSignInRequest):
+    """Compatibility alias for clients that call /staff/login (without hyphen)."""
+    return sign_in_staff_account(payload)
+
+
 @router.post("/session/refresh", response_model=AuthSessionResponse)
 async def refresh_session(
     credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),

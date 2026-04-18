@@ -1,14 +1,16 @@
+import logging
+
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.auth_store import (
-    read_device_snapshot,
-    read_patients_snapshot,
     read_settings_for_user,
     update_theme_mode,
 )
 from app.routes.auth_routes import router as auth_router
 from app.schemas.auth_schemas import SettingsUpdateRequest, UserSettingsResponse
+
+logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="Kinovo Triage API",
@@ -29,6 +31,20 @@ app.add_middleware(
 
 app.include_router(auth_router)
 
+try:
+    from app.routes.ble_ingestion_routes import router as ble_ingestion_router
+
+    app.include_router(ble_ingestion_router)
+except Exception as exc:  # pragma: no cover - defensive availability guard
+    logger.warning("BLE ingestion router disabled during startup: %s", exc)
+
+try:
+    from app.routes.dashboard_routes import router as dashboard_router
+
+    app.include_router(dashboard_router)
+except Exception as exc:  # pragma: no cover - defensive availability guard
+    logger.warning("Dashboard router disabled during startup: %s", exc)
+
 
 @app.get("/health")
 async def health_check():
@@ -48,11 +64,3 @@ async def put_settings(
     return update_theme_mode(mode=payload.mode, email=email)
 
 
-@app.get("/api/v1/dashboard/waiting-room")
-async def get_waiting_room_snapshot():
-    return read_patients_snapshot()
-
-
-@app.get("/api/v1/dashboard/device-health")
-async def get_device_health_snapshot():
-    return read_device_snapshot()

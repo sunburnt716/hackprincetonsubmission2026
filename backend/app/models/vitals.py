@@ -1,11 +1,18 @@
 import uuid
+from enum import Enum
 from datetime import datetime
 
-from sqlalchemy import ForeignKey, Numeric, SmallInteger
+from sqlalchemy import Boolean, Enum as SQLEnum, ForeignKey, Integer, Numeric, SmallInteger, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models.base import Base, UUIDMixin
+
+
+class AckState(str, Enum):
+    pending = "pending"
+    acknowledged = "acknowledged"
+    failed = "failed"
 
 
 class VitalsRecord(UUIDMixin, Base):
@@ -44,5 +51,20 @@ class VitalsRecord(UUIDMixin, Base):
     # --- Reading timestamp (device time, not ingestion time) ---
     timestamp: Mapped[datetime] = mapped_column(nullable=False, index=True)
 
-    # This phase focuses on waiting-room intake monitoring only.
-    # Emergency transport envelope metadata is intentionally excluded.
+    # --- Clinical severity flags ---
+    is_critical: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    critical_reason: Mapped[str | None] = mapped_column(String(100), nullable=True)
+
+    # --- Transport envelope metadata ---
+    record_id: Mapped[str] = mapped_column(String(50), nullable=False, unique=True)
+    sequence_number: Mapped[int] = mapped_column(Integer, nullable=False)
+    checksum: Mapped[str] = mapped_column(String(64), nullable=False)
+    ack_state: Mapped[AckState] = mapped_column(
+        SQLEnum(AckState, name="ack_state"),
+        default=AckState.pending,
+        nullable=False,
+    )
+    retry_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    essential_vitals_only: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    buffered_during_dead_zone: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    backfill_batch_id: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
