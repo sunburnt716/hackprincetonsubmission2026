@@ -1,4 +1,4 @@
-function PatientCard({ patient, onSelect, onRelease }) {
+function PatientCard({ patient, isSelected, onSelect, onRelease }) {
   const { patientName, patientId, clinicalPayload, uiState } = patient;
 
   const trendLabel =
@@ -44,7 +44,7 @@ function PatientCard({ patient, onSelect, onRelease }) {
 
   return (
     <article
-      className={`triage-row ${uiState.isCritical ? "triage-row--critical" : ""}`}
+      className={`triage-row ${uiState.isCritical ? "triage-row--critical" : ""} ${isSelected ? "triage-row--selected" : ""}`.trim()}
       aria-label={`Open details for ${patientName}`}
       role="button"
       tabIndex={0}

@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import AddPatientModal from "../components/dashboard/AddPatientModal";
-import DeviceHealthGrid from "../components/dashboard/DeviceHealthGrid";
 import PairDeviceModal from "../components/dashboard/PairDeviceModal";
 import PatientCard from "../components/dashboard/PatientCard";
 import PatientDetailPanel from "../components/dashboard/PatientDetailPanel";
@@ -36,6 +35,7 @@ function DashboardContent() {
       },
     [],
   );
+
   const {
     patients,
     criticalCount,
@@ -47,6 +47,7 @@ function DashboardContent() {
     connectPatientWearable,
     releasePatient,
   } = useVitals();
+
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [isAddPatientOpen, setIsAddPatientOpen] = useState(false);
   const [pairingPatientId, setPairingPatientId] = useState(null);
@@ -181,25 +182,29 @@ function DashboardContent() {
           <div className="waiting-room-scroll">
             <div className="waiting-room-grid">
               {patients.map((patient) => (
-                <PatientCard
-                  key={patient.patientId}
-                  patient={patient}
-                  onSelect={setSelectedPatientId}
-                  onRelease={releasePatient}
-                />
+                <div key={patient.patientId} className="waiting-room-item">
+                  <PatientCard
+                    patient={patient}
+                    isSelected={
+                      selectedPatient?.patientId === patient.patientId
+                    }
+                    onSelect={setSelectedPatientId}
+                    onRelease={releasePatient}
+                  />
+
+                  {selectedPatient?.patientId === patient.patientId ? (
+                    <PatientDetailPanel
+                      patient={selectedPatient}
+                      inline
+                      onClose={() => setSelectedPatientId(null)}
+                      onRelease={releasePatient}
+                    />
+                  ) : null}
+                </div>
               ))}
             </div>
           </div>
         </section>
-
-        {selectedPatient ? (
-          <PatientDetailPanel
-            patient={selectedPatient}
-            onRelease={releasePatient}
-          />
-        ) : (
-          <DeviceHealthGrid patients={patients} compact />
-        )}
       </div>
 
       <AddPatientModal
@@ -229,7 +234,6 @@ function DashboardContent() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="workflow-alert-title"
-            onClick={(event) => event.stopPropagation()}
           >
             <header className="dashboard-modal__header">
               <h2 id="workflow-alert-title">{workflowAlert.title}</h2>
@@ -237,6 +241,7 @@ function DashboardContent() {
                 Close
               </button>
             </header>
+
             <div className="dashboard-modal__content">
               <p>{workflowAlert.message}</p>
               <button

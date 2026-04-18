@@ -1,7 +1,7 @@
 import LiveWaveformCanvas from "./charts/LiveWaveformCanvas";
 import { useVitals } from "../../providers/useVitals";
 
-function PatientDetailPanel({ patient, onRelease }) {
+function PatientDetailPanel({ patient, onClose, onRelease, inline = false }) {
   const { getWaveformSeries } = useVitals();
 
   if (!patient) {
@@ -18,10 +18,24 @@ function PatientDetailPanel({ patient, onRelease }) {
   const waveformSamples = getWaveformSeries(patient.patientId);
 
   return (
-    <aside className="detail-panel" aria-label="Patient detail panel">
+    <aside
+      className={`detail-panel ${inline ? "detail-panel--inline" : ""}`.trim()}
+      aria-label="Patient detail panel"
+    >
       <header className="detail-panel__header">
-        <h2>Patient Detail</h2>
-        <span className="detail-panel__id">{patient.patientId}</span>
+        <div>
+          <h2>Patient Detail</h2>
+          <span className="detail-panel__id">{patient.patientId}</span>
+        </div>
+        {onClose ? (
+          <button
+            type="button"
+            className="detail-panel__close"
+            onClick={onClose}
+          >
+            Close
+          </button>
+        ) : null}
       </header>
 
       <div className="detail-panel__content">

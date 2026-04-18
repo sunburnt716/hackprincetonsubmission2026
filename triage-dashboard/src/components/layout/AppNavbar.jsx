@@ -86,14 +86,14 @@ function AppNavbar() {
             {isSignedIn ? (
               <>
                 <Link
-                  to={APP_ROUTES.DASHBOARD}
+                  to={APP_ROUTES.PORTAL_TRIAGE}
                   role="menuitem"
                   onClick={() => setMenuOpen(false)}
                 >
                   Dashboard
                 </Link>
                 <Link
-                  to={APP_ROUTES.SETTINGS}
+                  to={APP_ROUTES.PORTAL_SETTINGS}
                   role="menuitem"
                   onClick={() => setMenuOpen(false)}
                 >
