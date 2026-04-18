@@ -15,12 +15,8 @@ The main UI objective is rapid nurse scanning. Card layout, visual hierarchy, an
 ## Algorithms present in this layer
 
 1. Acuity sorting.
-2. Staleness detection.
-3. Circular buffer based trend and waveform windows.
-
-$$
-\text{Stale} = (t_{now} - t_{sample}) > 2\ \text{seconds for chart overlay}
-$$
+2. Circular buffer based trend and waveform windows.
+3. Device-health drift simulation.
 
 $$
 \text{TrendWindow} = 60\ \text{points at}\ 1\ \text{Hz},\quad \text{WaveWindow} = 150\ \text{points at}\ 25\ \text{Hz}

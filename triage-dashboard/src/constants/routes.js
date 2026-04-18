@@ -2,6 +2,7 @@ export const APP_ROUTES = {
   ROOT: "/",
   LOGIN: "/login",
   SIGNUP: "/signup",
+  FORGOT_PASSWORD: "/forgot-password",
   DASHBOARD: "/dashboard",
   DASHBOARD_PATIENT_DETAIL: "/dashboard/patient/:patientId",
   SETTINGS: "/settings",

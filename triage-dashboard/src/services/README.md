@@ -10,7 +10,7 @@ The UI should not own low level simulation or data mutation details. Services is
 
 1. Mock records are waiting room intake records.
 2. Location is intentionally excluded in the current phase schema.
-3. Transport metadata remains available for reliability compatibility.
+3. Device connectivity metrics are modeled directly for nursing operations.
 
 ## Core algorithms
 

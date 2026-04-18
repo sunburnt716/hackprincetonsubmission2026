@@ -1,10 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { APP_ROUTES } from "../../constants/routes";
 import {
   clearCurrentSession,
   getCurrentSession,
   hasActiveSession,
+  refreshCurrentSession,
 } from "../../services/authService.mock";
 import "./AppNavbar.css";
 
@@ -23,6 +24,37 @@ function AppNavbar() {
     setMenuOpen(false);
     navigate(APP_ROUTES.LOGIN);
   };
+
+  useEffect(() => {
+    if (!isSignedIn || !session?.accessToken) {
+      return undefined;
+    }
+
+    let cancelled = false;
+    const refresh = async () => {
+      const refreshedSession = await refreshCurrentSession();
+      if (cancelled) {
+        return;
+      }
+
+      if (!refreshedSession) {
+        setMenuOpen(false);
+        navigate(APP_ROUTES.LOGIN);
+      }
+    };
+
+    const intervalId = window.setInterval(
+      () => {
+        void refresh();
+      },
+      5 * 60 * 1000,
+    );
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(intervalId);
+    };
+  }, [isSignedIn, navigate, session?.accessToken]);
 
   return (
     <header className="app-navbar" aria-label="Primary navigation">

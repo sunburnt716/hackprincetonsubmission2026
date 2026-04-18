@@ -121,6 +121,7 @@ function Signup() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError("");
+    setNote("");
 
     const validationError = validate();
     if (validationError) {
@@ -129,33 +130,45 @@ function Signup() {
       return;
     }
 
-    const response = await submitSignup({
-      accountType: formData.accountType,
-      fullName: formData.fullName.trim(),
-      email: formData.email.trim(),
-      password: formData.password,
-      profile: {
-        age: formData.age,
-        knownConditions: formData.knownConditions,
-        currentMedications: formData.currentMedications,
-        emergencyContact: formData.emergencyContact,
-        staffRole: formData.staffRole,
-        hospitalName: formData.hospitalName,
-        facilityId: formData.facilityId,
-        staffId: formData.staffId,
-        department: formData.department,
-      },
-    });
-    setNote(
-      `Mock endpoint: ${response.endpoint} | Standardized login ID: ${response.payload.loginId}`,
-    );
+    try {
+      const response = await submitSignup({
+        accountType: formData.accountType,
+        fullName: formData.fullName.trim(),
+        email: formData.email.trim(),
+        password: formData.password,
+        profile: {
+          age: formData.age,
+          knownConditions: formData.knownConditions,
+          currentMedications: formData.currentMedications,
+          emergencyContact: formData.emergencyContact,
+          staffRole: formData.staffRole,
+          hospitalName: formData.hospitalName,
+          facilityId: formData.facilityId,
+          staffId: formData.staffId,
+          department: formData.department,
+        },
+      });
 
-    if (formData.accountType === ACCOUNT_TYPES.STAFF) {
-      navigate(APP_ROUTES.AUTH_PENDING_VERIFICATION);
-      return;
+      setNote(
+        `Endpoint: ${response.endpoint} | Login ID: ${response.payload.loginId}`,
+      );
+
+      if (formData.accountType === ACCOUNT_TYPES.STAFF) {
+        navigate(APP_ROUTES.STAFF_HOME);
+        return;
+      }
+
+      navigate(APP_ROUTES.PATIENT_HOME);
+    } catch (submitError) {
+      const message =
+        submitError instanceof Error
+          ? submitError.message
+          : "Unable to complete Sign-up right now.";
+
+      setError(
+        `Sign-up failed before redirect. ${message} If this is a staff account, confirm backend is running at http://127.0.0.1:8000.`,
+      );
     }
-
-    navigate(APP_ROUTES.PATIENT_HOME);
   };
 
   return (
@@ -164,7 +177,7 @@ function Signup() {
         <h1 id="signup-title">Sign-up</h1>
         <p className="auth-subtext">
           Patient accounts collect basic medical context. Hospital staff
-          accounts are routed for backend verification.
+          accounts are created immediately for hackathon testing.
         </p>
 
         <nav className="auth-tabs" aria-label="Authentication pages">

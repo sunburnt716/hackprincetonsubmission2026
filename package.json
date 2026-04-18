@@ -1,0 +1,23 @@
+{
+  "name": "hackprincetonsubmission2026",
+  "version": "1.0.0",
+  "description": "Edge-based vital monitoring system (BPM, SpO2, Stress) featuring an asynchronous I2C driver and FIFO circular buffer for resilient data syncing over BLE in low-connectivity environments.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sunburnt716/hackprincetonsubmission2026.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sunburnt716/hackprincetonsubmission2026/issues"
+  },
+  "homepage": "https://github.com/sunburnt716/hackprincetonsubmission2026#readme"
+}

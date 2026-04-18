@@ -2,9 +2,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   buildInitialQueueFromMockData,
   buildPatientFromRegisteredAccount,
+  connectWearableToPatient,
+  listAvailableWearables,
+  runWearablePrecheck,
   sortTriageQueue,
   tickPatientTelemetry,
-  updateStaleness,
 } from "../services/triageService.mock";
 import CircularBuffer from "../utils/CircularBuffer";
 import { VitalsContext } from "./vitalsContext";
@@ -25,6 +27,10 @@ const waveformSample = (timeMs, heartBeat) => {
   const spike = Math.sin((10 * Math.PI * frequency * timeMs) / 1000) * 0.15;
   return base + harmonic + spike;
 };
+
+const canTrackPatient = (patient) =>
+  patient.transportMeta.connectionStatus === "connected" &&
+  patient.transportMeta.activeReadsHealthy;
 
 function VitalsProvider({ children }) {
   const [patients, setPatients] = useState(() =>
@@ -80,14 +86,26 @@ function VitalsProvider({ children }) {
           return current;
         }
 
-        const targetIndex = Math.floor(Math.random() * current.length);
+        const trackableIndices = current
+          .map((patient, index) => ({ patient, index }))
+          .filter(({ patient }) => canTrackPatient(patient));
+
+        if (!trackableIndices.length) {
+          return current;
+        }
+
+        const targetIndex =
+          trackableIndices[Math.floor(Math.random() * trackableIndices.length)]
+            .index;
         const next = current.map((patient, index) =>
-          index === targetIndex
-            ? tickPatientTelemetry(patient)
-            : updateStaleness(patient, 10),
+          index === targetIndex ? tickPatientTelemetry(patient) : patient,
         );
 
         next.forEach((patient) => {
+          if (!canTrackPatient(patient)) {
+            return;
+          }
+
           const trend = trendBuffersRef.current.get(patient.patientId);
           if (trend) {
             trend.bpm.push(patient.clinicalPayload.vitals.heartBeat);
@@ -107,6 +125,10 @@ function VitalsProvider({ children }) {
       const now = Date.now();
       setPatients((current) => {
         current.forEach((patient) => {
+          if (!canTrackPatient(patient)) {
+            return;
+          }
+
           const wave = waveformBuffersRef.current.get(patient.patientId);
           if (wave) {
             wave.push(
@@ -140,6 +162,35 @@ function VitalsProvider({ children }) {
     const newPatient = buildPatientFromRegisteredAccount(account);
     initBuffersForPatient(newPatient);
     setPatients((current) => sortTriageQueue([newPatient, ...current]));
+    return newPatient;
+  };
+
+  const runConnectionChecks = (patientId, wearableId) => {
+    const patientExists = patients.some((patient) => patient.patientId === patientId);
+    if (!patientExists) {
+      return null;
+    }
+
+    return runWearablePrecheck(wearableId);
+  };
+
+  const connectPatientWearable = (patientId, precheckResult) => {
+    let didConnect = false;
+
+    setPatients((current) =>
+      sortTriageQueue(
+        current.map((patient) => {
+          if (patient.patientId !== patientId) {
+            return patient;
+          }
+
+          didConnect = true;
+          return connectWearableToPatient(patient, precheckResult);
+        }),
+      ),
+    );
+
+    return didConnect;
   };
 
   const releasePatient = (patientId) => {
@@ -169,6 +220,9 @@ function VitalsProvider({ children }) {
     selectedPatientId,
     setSelectedPatientId,
     addPatientFromAccount,
+    listAvailableWearables,
+    runConnectionChecks,
+    connectPatientWearable,
     releasePatient,
     getTrendSeries: (patientId) => {
       const bufferSet = trendBuffersRef.current.get(patientId);

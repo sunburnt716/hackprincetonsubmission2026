@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-04-18T00:00:00.000Z",
+  "devices": [
+    {
+      "device_id": "wearable-b21",
+      "patient_id": "pt_8f3b21",
+      "patient_name": "Jordan Miles",
+      "battery_level": 90,
+      "signal_strength": -58,
+      "last_sync_time": "2026-04-08T08:01:00.000Z",
+      "is_active": true,
+      "connection_status": "connected"
+    },
+    {
+      "device_id": "wearable-901",
+      "patient_id": "pt_7ca901",
+      "patient_name": "Rina Patel",
+      "battery_level": 84,
+      "signal_strength": -63,
+      "last_sync_time": "2026-04-08T09:11:00.000Z",
+      "is_active": true,
+      "connection_status": "connected"
+    }
+  ]
+}

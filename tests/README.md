@@ -9,7 +9,7 @@ The system is currently UI first with backend pending. Realistic simulation is r
 ## Data strategy
 
 1. Keep values physiologically plausible.
-2. Preserve transport metadata for store and forward compatibility.
+2. Prioritize waiting-room triage readability and device-health realism.
 3. Use synthetic identities only.
 
 ## Core equations used by triage simulation

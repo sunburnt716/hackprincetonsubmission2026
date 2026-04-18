@@ -1,11 +1,10 @@
 .dashboard-shell {
   min-height: 100svh;
-  padding: 42px;
+  padding: 20px;
   box-sizing: border-box;
   display: grid;
-  gap: 24px;
-  max-width: 1400px;
-  margin: 0 auto;
+  gap: 16px;
+  width: 100%;
 }
 
 .dashboard-header {
@@ -22,10 +21,11 @@
 
 .status-pill {
   border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 8px 12px;
-  background: var(--accent-bg);
+  border-radius: 2px;
+  padding: 6px 10px;
+  background: transparent;
   color: var(--text-h);
+  font-weight: 600;
 }
 
 .dashboard-controls {
@@ -40,17 +40,17 @@
   align-items: center;
   gap: 8px;
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px 12px;
+  border-radius: 2px;
+  padding: 8px 10px;
 }
 
 .primary-action,
 .secondary-action {
   border: 1px solid var(--accent);
-  border-radius: 8px;
-  background: var(--accent-bg);
+  border-radius: 2px;
+  background: transparent;
   color: var(--text-h);
-  padding: 10px 14px;
+  padding: 8px 12px;
   font: inherit;
   cursor: pointer;
 }
@@ -60,153 +60,262 @@
   background: transparent;
 }
 
+.dashboard-main {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(0, 1.7fr) minmax(360px, 1fr);
+  align-items: start;
+}
+
+.waiting-room-section {
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: var(--bg);
+}
+
+.waiting-room-section h2 {
+  margin: 0;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 1rem;
+}
+
+.triage-header,
+.triage-row {
+  display: grid;
+  grid-template-columns: 2fr repeat(3, minmax(70px, 1fr)) 1.3fr 1.2fr 1.3fr;
+  gap: 8px;
+  align-items: center;
+}
+
+.triage-header {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text);
+}
+
 .waiting-room-scroll {
   max-height: 62svh;
   overflow-y: auto;
-  padding-right: 6px;
 }
 
 .waiting-room-grid {
   display: grid;
-  gap: 18px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.patient-card {
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 20px;
-  background: var(--bg);
-  color: var(--text-h);
-  text-align: left;
+.triage-row {
+  position: relative;
+  border-bottom: 1px solid var(--border);
+  padding: 10px 12px;
+  cursor: pointer;
 }
 
-.patient-card.critical {
-  border-color: #ef4444;
-  animation: criticalPulse 1s infinite;
+.triage-row:hover {
+  background: color-mix(in srgb, var(--accent-bg) 25%, transparent);
 }
 
-.patient-card.stale {
-  opacity: 0.7;
+.triage-row:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
-.patient-card__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
+.triage-row--critical {
+  border-left: 3px solid #ef4444;
 }
 
-.patient-card__header h3 {
+.triage-row__cell {
+  min-width: 0;
+}
+
+.triage-row__cell h3 {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: 0.93rem;
 }
 
-.patient-card__vitals {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+.triage-row__meta {
+  color: var(--text);
+  font-size: 0.78rem;
+}
+
+.triage-row__label {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.triage-row__cell strong {
+  font-size: 1rem;
+}
+
+.triage-row__actions {
+  display: flex;
   gap: 6px;
-  margin-bottom: 10px;
+  justify-content: flex-end;
 }
 
-.patient-card__meta {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  align-items: center;
-  font-size: 0.9rem;
+.triage-row__actions .primary-action,
+.triage-row__actions .secondary-action {
+  font-size: 0.78rem;
+  padding: 6px 8px;
 }
 
-.patient-card__actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 14px;
-  flex-wrap: wrap;
+.triage-row__critical-message {
+  grid-column: 1 / -1;
+  margin: 4px 0 0;
+  color: #dc2626;
+  font-size: 0.76rem;
+  font-weight: 600;
 }
 
-.acuity-sparkline,
+.status-text {
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-text--trend-rising {
+  color: #b45309;
+}
+
+.status-text--trend-falling {
+  color: #1d4ed8;
+}
+
+.status-text--trend-steady {
+  color: #374151;
+}
+
+.status-text--connection-connected {
+  color: #166534;
+}
+
+.status-text--connection-disconnected {
+  color: #b91c1c;
+}
+
+.status-text--connection-unpaired,
+.status-text--connection-pending-reads,
+.status-text--connection-pending-active-reads {
+  color: #92400e;
+}
+
 .waveform-shell {
   position: relative;
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 6px;
+  border-radius: 2px;
+  padding: 4px;
   margin: 8px 0;
-}
-
-.acuity-sparkline__svg {
-  width: 100%;
-  height: 72px;
-  display: block;
-}
-
-.sparkline {
-  fill: none;
-  stroke-width: 2.2;
-}
-
-.sparkline--bpm {
-  stroke: #f59e0b;
-}
-
-.sparkline--spo2 {
-  stroke: #3b82f6;
 }
 
 .waveform-canvas {
   width: 100%;
-  height: 180px;
+  height: 100px;
   display: block;
 }
 
-.stale-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgb(0 0 0 / 42%);
-  color: #fff;
+.detail-panel {
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: var(--bg);
+  position: sticky;
+  top: 12px;
+}
+
+.detail-panel h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.detail-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.detail-panel__id {
+  font-size: 0.78rem;
+  color: var(--text);
+}
+
+.detail-panel__content {
+  padding: 12px;
   display: grid;
-  place-items: center;
-  font-weight: 700;
-  border-radius: 10px;
+  gap: 10px;
 }
 
-.patient-card__critical-message {
-  margin: 10px 0 0;
-  color: #ef4444;
-  font-weight: 600;
+.detail-panel__grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.badge {
-  border: 1px solid var(--accent-border);
-  background: var(--accent-bg);
-  border-radius: 999px;
-  padding: 4px 8px;
+.detail-panel__grid p {
+  margin: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.detail-panel__grid strong {
+  font-size: 0.74rem;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .device-health {
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 20px;
+  border-radius: 2px;
+  padding: 0;
+  background: var(--bg);
+}
+
+.device-health--panel {
+  position: sticky;
+  top: 12px;
+}
+
+.device-health--panel .device-health__table {
+  max-height: 62svh;
+  overflow-y: auto;
 }
 
 .device-health h2 {
-  margin: 0 0 14px;
-}
-
-.device-health__grid {
-  display: grid;
-  gap: 14px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.device-health__card {
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 16px;
-}
-
-.device-health__card h3 {
-  margin: 0 0 8px;
+  margin: 0;
   font-size: 1rem;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.device-health__table {
+  display: grid;
+}
+
+.device-health__row {
+  display: grid;
+  grid-template-columns: 1.4fr 1.4fr 0.8fr 1fr 1fr;
+  gap: 8px;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  font-size: 0.84rem;
+}
+
+.device-health__patient {
+  font-weight: 600;
+}
+
+.device-health__battery-critical {
+  margin-left: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #b91c1c;
 }
 
 .modal-backdrop {
@@ -222,7 +331,7 @@
 .dashboard-modal {
   width: min(640px, 100%);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 2px;
   background: var(--bg);
   color: var(--text-h);
   max-height: 85svh;
@@ -244,7 +353,7 @@
 
 .dashboard-modal__header button {
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 2px;
   padding: 8px 10px;
   background: transparent;
   color: var(--text-h);
@@ -258,10 +367,66 @@
 
 .dashboard-modal__content input {
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 2px;
   padding: 10px 12px;
   background: var(--bg);
   color: var(--text-h);
+}
+
+.dashboard-modal__select {
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 10px 12px;
+  background: var(--bg);
+  color: var(--text-h);
+  font: inherit;
+}
+
+.pairing-checks {
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--bg) 90%, var(--accent-bg));
+}
+
+.pairing-checks p {
+  margin: 0 0 6px;
+}
+
+.pairing-checks p:last-child {
+  margin-bottom: 0;
+}
+
+.dashboard-modal--alert {
+  width: min(520px, 100%);
+}
+
+.dashboard-modal--alert-warning .dashboard-modal__header {
+  border-bottom-color: #f59e0b;
+}
+
+.dashboard-modal--alert-critical .dashboard-modal__header {
+  border-bottom-color: #ef4444;
+}
+
+.inline-choice-group {
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 10px 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.inline-choice-group legend {
+  padding: 0 4px;
+  font-weight: 600;
+}
+
+.inline-choice-group label {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
 }
 
 .inline-note {
@@ -283,19 +448,44 @@
 
 @media (max-width: 900px) {
   .dashboard-shell {
-    padding: 20px;
+    padding: 14px;
   }
 
   .dashboard-header {
     flex-direction: column;
   }
 
-  .patient-card__vitals {
+  .dashboard-main {
     grid-template-columns: 1fr;
   }
 
-  .waiting-room-grid,
-  .device-health__grid {
+  .triage-header {
+    display: none;
+  }
+
+  .triage-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .triage-row__actions,
+  .triage-row__critical-message {
+    grid-column: 1 / -1;
+  }
+
+  .detail-panel {
+    position: static;
+  }
+
+  .device-health--panel {
+    position: static;
+  }
+
+  .detail-panel__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .device-health__row {
     grid-template-columns: 1fr;
   }
 }

@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-04-18T00:00:00.000Z",
+  "patients": [
+    {
+      "id": "pt_8f3b21",
+      "full_name": "Jordan Miles",
+      "email": "jordan.miles@example.com",
+      "temporary": false,
+      "status": "waiting",
+      "wait_started_at": "2026-04-08T08:01:00.000Z",
+      "latest_vitals": {
+        "timestamp": "2026-04-08T08:01:00.000Z",
+        "blood_oxygen": 97,
+        "heart_beat": 75,
+        "stress": 35
+      },
+      "wearable": {
+        "device_id": "wearable-b21",
+        "battery_level": 90,
+        "signal_strength": -58,
+        "last_sync_time": "2026-04-08T08:01:00.000Z",
+        "paired_at": "2026-04-08T08:01:00.000Z",
+        "is_active": true,
+        "connection_status": "connected"
+      }
+    },
+    {
+      "id": "pt_7ca901",
+      "full_name": "Rina Patel",
+      "email": "rina.patel@example.com",
+      "temporary": false,
+      "status": "waiting",
+      "wait_started_at": "2026-04-08T09:11:00.000Z",
+      "latest_vitals": {
+        "timestamp": "2026-04-08T09:11:00.000Z",
+        "blood_oxygen": 87,
+        "heart_beat": 118,
+        "stress": 72
+      },
+      "wearable": {
+        "device_id": "wearable-901",
+        "battery_level": 84,
+        "signal_strength": -63,
+        "last_sync_time": "2026-04-08T09:11:00.000Z",
+        "paired_at": "2026-04-08T09:11:00.000Z",
+        "is_active": true,
+        "connection_status": "connected"
+      }
+    }
+  ]
+}

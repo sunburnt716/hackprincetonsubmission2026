@@ -8,15 +8,10 @@ const mockData = {
           patientId: "pt_8f3b21",
           vitals: { bloodOxygen: 97, stress: 35, heartBeat: 75 },
           timestamp: "2026-04-08T08:01:00.000Z",
-          transportMeta: {
-            recordId: "rec_stable_0003",
-            sequenceNumber: 3,
-            checksum: "d18f40ae",
-            ackState: "acknowledged",
-            retryCount: 0,
-            essentialVitalsOnly: false,
-            bufferedDuringDeadZone: false,
-            backfillBatchId: null,
+          deviceHealth: {
+            deviceId: "wearable-b21",
+            batteryLevel: 90,
+            signalStrength: -58,
           },
         },
       ],
@@ -29,15 +24,10 @@ const mockData = {
           patientId: "pt_7ca901",
           vitals: { bloodOxygen: 87, stress: 72, heartBeat: 118 },
           timestamp: "2026-04-08T09:11:00.000Z",
-          transportMeta: {
-            recordId: "rec_hypoxia_0003",
-            sequenceNumber: 3,
-            checksum: "1f4ce8a1",
-            ackState: "acknowledged",
-            retryCount: 0,
-            essentialVitalsOnly: true,
-            bufferedDuringDeadZone: false,
-            backfillBatchId: null,
+          deviceHealth: {
+            deviceId: "wearable-901",
+            batteryLevel: 84,
+            signalStrength: -63,
           },
         },
       ],
@@ -50,57 +40,42 @@ const mockData = {
           patientId: "pt_23de11",
           vitals: { bloodOxygen: 89, stress: 94, heartBeat: 141 },
           timestamp: "2026-04-08T10:15:30.000Z",
-          transportMeta: {
-            recordId: "rec_trauma_0002",
-            sequenceNumber: 2,
-            checksum: "ee4917b5",
-            ackState: "acknowledged",
-            retryCount: 0,
-            essentialVitalsOnly: true,
-            bufferedDuringDeadZone: false,
-            backfillBatchId: null,
+          deviceHealth: {
+            deviceId: "wearable-e11",
+            batteryLevel: 80,
+            signalStrength: -67,
           },
         },
       ],
     },
     {
-      scenarioId: "WR_BUFFERED_004",
+      scenarioId: "WR_STABLE_004",
       records: [
         {
           patientName: "Maya Brooks",
           patientId: "pt_5ac884",
           vitals: { bloodOxygen: 95, stress: 51, heartBeat: 86 },
           timestamp: "2026-04-08T11:30:00.000Z",
-          transportMeta: {
-            recordId: "rec_deadzone_0004",
-            sequenceNumber: 4,
-            checksum: "d71be54e",
-            ackState: "acknowledged",
-            retryCount: 1,
-            essentialVitalsOnly: false,
-            bufferedDuringDeadZone: true,
-            backfillBatchId: "batch_20260408_1100",
+          deviceHealth: {
+            deviceId: "wearable-884",
+            batteryLevel: 88,
+            signalStrength: -60,
           },
         },
       ],
     },
     {
-      scenarioId: "WR_RETRY_005",
+      scenarioId: "WR_STABLE_005",
       records: [
         {
           patientName: "Noah Singh",
           patientId: "pt_11fbb8",
           vitals: { bloodOxygen: 96, stress: 43, heartBeat: 81 },
           timestamp: "2026-04-08T12:06:00.000Z",
-          transportMeta: {
-            recordId: "rec_shaky_0003",
-            sequenceNumber: 3,
-            checksum: "f34c5bbd",
-            ackState: "acknowledged",
-            retryCount: 2,
-            essentialVitalsOnly: false,
-            bufferedDuringDeadZone: true,
-            backfillBatchId: "batch_20260408_1205",
+          deviceHealth: {
+            deviceId: "wearable-bb8",
+            batteryLevel: 86,
+            signalStrength: -57,
           },
         },
       ],
@@ -113,15 +88,10 @@ const mockData = {
           patientId: "pt_90ce44",
           vitals: { bloodOxygen: 97, stress: null, heartBeat: 82 },
           timestamp: "2026-04-08T12:45:30.000Z",
-          transportMeta: {
-            recordId: "rec_dropout_0002",
-            sequenceNumber: 2,
-            checksum: "1d74f7c9",
-            ackState: "acknowledged",
-            retryCount: 0,
-            essentialVitalsOnly: true,
-            bufferedDuringDeadZone: false,
-            backfillBatchId: null,
+          deviceHealth: {
+            deviceId: "wearable-e44",
+            batteryLevel: 83,
+            signalStrength: -62,
           },
         },
       ],
@@ -134,15 +104,10 @@ const mockData = {
           patientId: "pt_6d1ab2",
           vitals: { bloodOxygen: 95, stress: 47, heartBeat: 52 },
           timestamp: "2026-04-08T13:10:00.000Z",
-          transportMeta: {
-            recordId: "rec_age_0001",
-            sequenceNumber: 1,
-            checksum: "9fcd1024",
-            ackState: "acknowledged",
-            retryCount: 0,
-            essentialVitalsOnly: false,
-            bufferedDuringDeadZone: false,
-            backfillBatchId: null,
+          deviceHealth: {
+            deviceId: "wearable-ab2",
+            batteryLevel: 85,
+            signalStrength: -61,
           },
         },
         {
@@ -150,15 +115,10 @@ const mockData = {
           patientId: "pt_f1310e",
           vitals: { bloodOxygen: 99, stress: 55, heartBeat: 122 },
           timestamp: "2026-04-08T13:10:30.000Z",
-          transportMeta: {
-            recordId: "rec_age_0002",
-            sequenceNumber: 2,
-            checksum: "5be7d8a2",
-            ackState: "acknowledged",
-            retryCount: 0,
-            essentialVitalsOnly: false,
-            bufferedDuringDeadZone: false,
-            backfillBatchId: null,
+          deviceHealth: {
+            deviceId: "wearable-10e",
+            batteryLevel: 89,
+            signalStrength: -55,
           },
         },
       ],
@@ -166,11 +126,63 @@ const mockData = {
   ],
 };
 
+const mockWearableInventory = [
+  {
+    wearableId: "wearable-k102",
+    batteryLevel: 86,
+    signalStrength: -60,
+    activeReadsEnabled: true,
+    lastReadAt: new Date(Date.now() - 3000).toISOString(),
+  },
+  {
+    wearableId: "wearable-k233",
+    batteryLevel: 8,
+    signalStrength: -72,
+    activeReadsEnabled: true,
+    lastReadAt: new Date(Date.now() - 6000).toISOString(),
+  },
+  {
+    wearableId: "wearable-k301",
+    batteryLevel: 65,
+    signalStrength: -68,
+    activeReadsEnabled: false,
+    lastReadAt: null,
+  },
+  {
+    wearableId: "wearable-k417",
+    batteryLevel: 42,
+    signalStrength: -81,
+    activeReadsEnabled: true,
+    lastReadAt: new Date(Date.now() - 18000).toISOString(),
+  },
+];
+
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+const ACTIVE_READ_THRESHOLD_MS = 10000;
+const LOW_BATTERY_THRESHOLD = 10;
+
+const evaluateConnectionStatus = (meta) => {
+  if (!meta?.deviceId) {
+    return "unpaired";
+  }
+
+  if (!meta.activeReadsHealthy) {
+    return "pending_reads";
+  }
+
+  const ageMs = meta.lastSyncTime
+    ? Date.now() - new Date(meta.lastSyncTime).getTime()
+    : Number.POSITIVE_INFINITY;
+
+  return ageMs <= ACTIVE_READ_THRESHOLD_MS ? "connected" : "disconnected";
+};
 
 const withUiState = (record, previousHeartBeat = record.vitals.heartBeat) => {
-  const bpmDelta = Math.abs(record.vitals.heartBeat - previousHeartBeat);
+  const signedBpmDelta = record.vitals.heartBeat - previousHeartBeat;
+  const bpmDelta = Math.abs(signedBpmDelta);
   const isCritical = record.vitals.bloodOxygen < 90 || bpmDelta > 20;
+  const heartBeatDirection =
+    signedBpmDelta > 0 ? "rising" : signedBpmDelta < 0 ? "falling" : "steady";
 
   return {
     ...record,
@@ -183,20 +195,32 @@ const withUiState = (record, previousHeartBeat = record.vitals.heartBeat) => {
             ? "Rapid heartbeat spike"
             : "Stable",
       bpmDelta,
-      lastUpdatedSeconds: 0,
-      isStale: false,
-      streamType: record.transportMeta.bufferedDuringDeadZone
-        ? "history"
-        : "realtime",
+      signedBpmDelta,
+      heartBeatDirection,
     },
   };
 };
 
-const buildDeviceHealth = (patientId, sequenceNumber) => ({
-  deviceId: `wearable-${patientId.slice(-4)}`,
-  batteryLevel: clamp(92 - sequenceNumber * 2, 25, 99),
-  signalStrength: clamp(-58 - sequenceNumber * 2, -95, -45),
+const buildDeviceHealth = (patientId, baselineHealth = {}, pairedAt = null) => ({
+  deviceId: baselineHealth.deviceId ?? `wearable-${patientId.slice(-4)}`,
+  batteryLevel: clamp(baselineHealth.batteryLevel ?? 90, 25, 99),
+  signalStrength: clamp(baselineHealth.signalStrength ?? -58, -95, -45),
   lastSyncTime: new Date().toISOString(),
+  pairedAt,
+  lowBatteryThreshold: LOW_BATTERY_THRESHOLD,
+  activeReadsHealthy: true,
+  connectionStatus: "connected",
+});
+
+const buildUnpairedTransportMeta = () => ({
+  deviceId: null,
+  batteryLevel: null,
+  signalStrength: null,
+  lastSyncTime: null,
+  pairedAt: null,
+  lowBatteryThreshold: LOW_BATTERY_THRESHOLD,
+  activeReadsHealthy: false,
+  connectionStatus: "unpaired",
 });
 
 export const buildInitialQueueFromMockData = () => {
@@ -223,13 +247,11 @@ export const buildInitialQueueFromMockData = () => {
         vitals: record.vitals,
         timestamp: record.timestamp,
       },
-      transportMeta: {
-        ...record.transportMeta,
-        ...buildDeviceHealth(
-          record.patientId,
-          record.transportMeta.sequenceNumber,
-        ),
-      },
+      transportMeta: buildDeviceHealth(
+        record.patientId,
+        record.deviceHealth,
+        record.timestamp,
+      ),
       uiState: envelope.uiState,
     };
   });
@@ -296,8 +318,11 @@ export const tickPatientTelemetry = (patient) => {
   );
 
   const timestamp = new Date().toISOString();
-  const bpmDelta = Math.abs(nextHeartBeat - previousVitals.heartBeat);
+  const signedBpmDelta = nextHeartBeat - previousVitals.heartBeat;
+  const bpmDelta = Math.abs(signedBpmDelta);
   const isCritical = nextBloodOxygen < 90 || bpmDelta > 20;
+  const heartBeatDirection =
+    signedBpmDelta > 0 ? "rising" : signedBpmDelta < 0 ? "falling" : "steady";
 
   return {
     ...patient,
@@ -312,19 +337,22 @@ export const tickPatientTelemetry = (patient) => {
     },
     transportMeta: {
       ...patient.transportMeta,
-      sequenceNumber: (patient.transportMeta.sequenceNumber ?? 0) + 1,
-      batteryLevel: clamp(
-        patient.transportMeta.batteryLevel - Math.random() * 0.3,
-        5,
-        100,
-      ),
-      signalStrength: clamp(
-        patient.transportMeta.signalStrength + (Math.random() > 0.5 ? 1 : -1),
-        -96,
-        -44,
-      ),
+      batteryLevel:
+        typeof patient.transportMeta.batteryLevel === "number"
+          ? clamp(patient.transportMeta.batteryLevel - Math.random() * 0.3, 1, 100)
+          : patient.transportMeta.batteryLevel,
+      signalStrength:
+        typeof patient.transportMeta.signalStrength === "number"
+          ? clamp(
+              patient.transportMeta.signalStrength +
+                (Math.random() > 0.5 ? 1 : -1),
+              -96,
+              -44,
+            )
+          : patient.transportMeta.signalStrength,
       lastSyncTime: timestamp,
-      bufferedDuringDeadZone: Math.random() < 0.05,
+      activeReadsHealthy: true,
+      connectionStatus: "connected",
     },
     uiState: {
       isCritical,
@@ -335,24 +363,9 @@ export const tickPatientTelemetry = (patient) => {
             ? "Rapid heartbeat spike"
             : "Stable",
       bpmDelta,
-      lastUpdatedSeconds: 0,
-      isStale: false,
-      streamType: Math.random() < 0.05 ? "history" : "realtime",
-    },
-  };
-};
-
-export const updateStaleness = (patient, staleThresholdSeconds = 10) => {
-  const ageSeconds = Math.floor(
-    (Date.now() - new Date(patient.clinicalPayload.timestamp).getTime()) / 1000,
-  );
-
-  return {
-    ...patient,
-    uiState: {
-      ...patient.uiState,
-      lastUpdatedSeconds: Math.max(ageSeconds, 0),
-      isStale: ageSeconds > staleThresholdSeconds,
+      signedBpmDelta,
+      heartBeatDirection,
+      monitoringStatus: "Live reads active",
     },
   };
 };
@@ -374,32 +387,82 @@ export const buildPatientFromRegisteredAccount = (account) => {
         stress: 24,
       },
     },
-    transportMeta: {
-      recordId: `rec_${crypto.randomUUID().slice(0, 8)}`,
-      sequenceNumber: 1,
-      checksum: "pending-backend-checksum",
-      ackState: "pending",
-      retryCount: 0,
-      essentialVitalsOnly: false,
-      bufferedDuringDeadZone: false,
-      backfillBatchId: null,
-      deviceId: `wearable-${crypto.randomUUID().slice(0, 4)}`,
-      batteryLevel: 89,
-      signalStrength: -62,
-      lastSyncTime: timestamp,
-    },
+    transportMeta: buildUnpairedTransportMeta(),
     uiState: {
       isCritical: false,
       criticalReason: "Stable",
       bpmDelta: 0,
-      lastUpdatedSeconds: 0,
-      isStale: false,
-      streamType: "realtime",
+      signedBpmDelta: 0,
+      heartBeatDirection: "steady",
+      monitoringStatus: "Pair wearable to begin active tracking",
     },
     accountMeta: {
       loginId: account.loginId,
       temporary: Boolean(account.temporary),
       status: account.status ?? "active",
+    },
+  };
+};
+
+export const listAvailableWearables = () =>
+  mockWearableInventory.map((wearable) => ({ ...wearable }));
+
+export const runWearablePrecheck = (wearableId) => {
+  const wearable = mockWearableInventory.find(
+    (candidate) => candidate.wearableId === wearableId,
+  );
+
+  if (!wearable) {
+    return null;
+  }
+
+  const now = Date.now();
+  const lastReadAt = wearable.lastReadAt;
+  const lastReadAgeMs = lastReadAt
+    ? Math.max(now - new Date(lastReadAt).getTime(), 0)
+    : Number.POSITIVE_INFINITY;
+  const hasActiveReads = wearable.activeReadsEnabled && lastReadAgeMs <= ACTIVE_READ_THRESHOLD_MS;
+  const batteryCritical = wearable.batteryLevel < LOW_BATTERY_THRESHOLD;
+
+  return {
+    wearableId: wearable.wearableId,
+    batteryLevel: wearable.batteryLevel,
+    signalStrength: wearable.signalStrength,
+    lastReadAt,
+    hasActiveReads,
+    batteryCritical,
+    lowBatteryThreshold: LOW_BATTERY_THRESHOLD,
+    connectionStatusLabel: hasActiveReads ? "Ready" : "Waiting for active reads",
+  };
+};
+
+export const connectWearableToPatient = (patient, precheckResult) => {
+  const timestamp = new Date().toISOString();
+
+  const nextTransportMeta = {
+    ...patient.transportMeta,
+    deviceId: precheckResult.wearableId,
+    batteryLevel: precheckResult.batteryLevel,
+    signalStrength: precheckResult.signalStrength,
+    lastSyncTime: precheckResult.lastReadAt ?? timestamp,
+    pairedAt: timestamp,
+    lowBatteryThreshold: precheckResult.lowBatteryThreshold,
+    activeReadsHealthy: precheckResult.hasActiveReads,
+    connectionStatus: precheckResult.hasActiveReads ? "connected" : "pending_reads",
+  };
+
+  return {
+    ...patient,
+    transportMeta: {
+      ...nextTransportMeta,
+      connectionStatus: evaluateConnectionStatus(nextTransportMeta),
+    },
+    uiState: {
+      ...patient.uiState,
+      monitoringStatus: precheckResult.hasActiveReads
+        ? "Live reads active"
+        : "No active reads yet",
+      batteryCritical: precheckResult.batteryCritical,
     },
   };
 };

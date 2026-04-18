@@ -1,17 +1,8 @@
 import { line, scaleLinear, curveBasis } from "d3";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
-function LiveWaveformCanvas({ samples, latestTimestamp }) {
+function LiveWaveformCanvas({ samples }) {
   const canvasRef = useRef(null);
-  const [nowMs, setNowMs] = useState(() => Date.now());
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setNowMs(Date.now());
-    }, 500);
-
-    return () => clearInterval(intervalId);
-  }, []);
 
   useEffect(() => {
     let frameId;
@@ -65,8 +56,6 @@ function LiveWaveformCanvas({ samples, latestTimestamp }) {
     };
   }, [samples]);
 
-  const isStale = nowMs - latestTimestamp > 2000;
-
   return (
     <div className="waveform-shell">
       <canvas
@@ -76,7 +65,6 @@ function LiveWaveformCanvas({ samples, latestTimestamp }) {
         className="waveform-canvas"
         aria-label="Live heartbeat waveform"
       />
-      {isStale ? <div className="stale-overlay">Stale Data</div> : null}
     </div>
   );
 }

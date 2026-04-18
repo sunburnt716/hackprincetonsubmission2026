@@ -1,15 +1,15 @@
 {
   "datasetInfo": {
-    "name": "Kinovo Ambulance Mock Data",
-    "version": "1.0.0",
+    "name": "Kinovo Waiting Room Mock Data",
+    "version": "1.1.0",
     "generatedAt": "2026-04-08T12:00:00Z",
-    "purpose": "Bootstrap firmware, BLE, API ingestion, and dashboard feature development with realistic ambulance vitals and offline backfill behavior.",
-    "canonicalSchema": "{patientName, vitals: {bloodOxygen, stress, heartBeat}, timestamp, location}",
+    "purpose": "Bootstrap waiting-room dashboard behavior with realistic triage vitals and device connectivity signals.",
+    "canonicalSchema": "{patientName, vitals: {bloodOxygen, stress, heartBeat}, timestamp}",
     "notes": [
       "Canonical key chosen: vitals.bloodOxygen",
       "All timestamps are ISO-8601 UTC",
-      "Location supports zone names and optional GPS payload",
-      "Transport metadata is included for store-and-forward simulation"
+      "Location fields are legacy and ignored for the waiting-room phase",
+      "Transport metadata is legacy and ignored for the waiting-room phase"
     ]
   },
   "schemaContract": {
@@ -19,8 +19,7 @@
       "vitals.bloodOxygen",
       "vitals.stress",
       "vitals.heartBeat",
-      "timestamp",
-      "location"
+      "timestamp"
     ],
     "ranges": {
       "bloodOxygen": {

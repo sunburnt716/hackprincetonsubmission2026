@@ -1,5 +1,4 @@
 import { curveMonotoneX, line, scaleLinear } from "d3";
-import { useEffect, useState } from "react";
 
 const WIDTH = 320;
 const HEIGHT = 72;
@@ -24,20 +23,9 @@ function buildPath(series, yDomain) {
   return generator(series) ?? "";
 }
 
-function AcuitySparkline({ bpmSeries, spo2Series, latestTimestamp }) {
-  const [nowMs, setNowMs] = useState(() => Date.now());
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setNowMs(Date.now());
-    }, 500);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
+function AcuitySparkline({ bpmSeries, spo2Series }) {
   const bpmPath = buildPath(bpmSeries, [40, 180]);
   const spo2Path = buildPath(spo2Series, [80, 100]);
-  const isStale = nowMs - latestTimestamp > 2000;
 
   return (
     <div className="acuity-sparkline">
@@ -51,7 +39,16 @@ function AcuitySparkline({ bpmSeries, spo2Series, latestTimestamp }) {
         <path d={bpmPath} className="sparkline sparkline--bpm" />
         <path d={spo2Path} className="sparkline sparkline--spo2" />
       </svg>
-      {isStale ? <div className="stale-overlay">Stale Data</div> : null}
+      <div className="sparkline-legend" aria-hidden="true">
+        <span className="sparkline-legend__item">
+          <span className="sparkline-legend__swatch sparkline-legend__swatch--bpm" />
+          BPM
+        </span>
+        <span className="sparkline-legend__item">
+          <span className="sparkline-legend__swatch sparkline-legend__swatch--spo2" />
+          SpO₂
+        </span>
+      </div>
     </div>
   );
 }

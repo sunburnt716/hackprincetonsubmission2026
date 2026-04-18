@@ -47,6 +47,7 @@ function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError("");
+    setNote("");
 
     const validationError = validate();
     if (validationError) {
@@ -55,22 +56,31 @@ function Login() {
       return;
     }
 
-    const response = await submitLogin({
-      accountType: formData.accountType,
-      email: formData.email.trim(),
-      password: formData.password,
-    });
+    try {
+      const response = await submitLogin({
+        accountType: formData.accountType,
+        email: formData.email.trim(),
+        password: formData.password,
+      });
 
-    setNote(
-      `Mock endpoint: ${response.endpoint} | Standardized login ID: ${response.payload.loginId}`,
-    );
+      setNote(
+        `Endpoint: ${response.endpoint} | Login ID: ${response.payload.loginId}`,
+      );
 
-    if (formData.accountType === ACCOUNT_TYPES.STAFF) {
-      navigate(APP_ROUTES.STAFF_HOME);
-      return;
+      if (formData.accountType === ACCOUNT_TYPES.STAFF) {
+        navigate(APP_ROUTES.STAFF_HOME);
+        return;
+      }
+
+      navigate(APP_ROUTES.PATIENT_HOME);
+    } catch (loginError) {
+      const message =
+        loginError instanceof Error
+          ? loginError.message
+          : "Unable to complete sign-in right now.";
+
+      setError(`Sign-in failed. ${message}`);
     }
-
-    navigate(APP_ROUTES.PATIENT_HOME);
   };
 
   return (
@@ -143,6 +153,9 @@ function Login() {
           <div className="auth-actions">
             <Link className="auth-link" to={APP_ROUTES.SIGNUP}>
               Need an account? Sign-up
+            </Link>
+            <Link className="auth-link" to={APP_ROUTES.FORGOT_PASSWORD}>
+              Forgot password?
             </Link>
             <button className="auth-submit" type="submit">
               Sign-in

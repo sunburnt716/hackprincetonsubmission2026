@@ -10,3 +10,75 @@
   max-width: 680px;
   margin: 0 auto;
 }
+
+.settings-page {
+  min-height: calc(100svh - 72px);
+  display: grid;
+  place-items: start center;
+  padding: 28px 16px;
+  box-sizing: border-box;
+}
+
+.settings-panel {
+  width: min(760px, 100%);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: var(--bg);
+  padding: 20px;
+  display: grid;
+  gap: 16px;
+}
+
+.settings-panel h1 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.settings-group {
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+}
+
+.settings-form {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--bg) 96%, var(--accent-bg));
+}
+
+.settings-form h3 {
+  margin: 0;
+  font-size: 0.98rem;
+}
+
+.settings-form input {
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  background: var(--bg);
+  color: var(--text-h);
+  padding: 10px 12px;
+  font: inherit;
+}
+
+.settings-group h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.settings-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-h);
+  font-size: 0.95rem;
+}
+
+.settings-note {
+  font-size: 0.9rem;
+  color: var(--text);
+}

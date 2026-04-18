@@ -9,7 +9,6 @@ function PatientDetailModal({ patient, onClose, onRelease }) {
   }
 
   const waveformSamples = getWaveformSeries(patient.patientId);
-  const latestTimestamp = new Date(patient.clinicalPayload.timestamp).getTime();
 
   return (
     <div className="modal-backdrop" role="presentation" onClick={onClose}>
@@ -48,23 +47,8 @@ function PatientDetailModal({ patient, onClose, onRelease }) {
           <p>
             <strong>Stress:</strong> {patient.clinicalPayload.vitals.stress}
           </p>
-          <p>
-            <strong>Signal:</strong>{" "}
-            {Math.round(patient.transportMeta.signalStrength)} dBm
-          </p>
-          <p>
-            <strong>Battery:</strong>{" "}
-            {Math.round(patient.transportMeta.batteryLevel)}%
-          </p>
-          <p>
-            <strong>Last Sync:</strong>{" "}
-            {new Date(patient.transportMeta.lastSyncTime).toLocaleTimeString()}
-          </p>
 
-          <LiveWaveformCanvas
-            samples={waveformSamples}
-            latestTimestamp={latestTimestamp}
-          />
+          <LiveWaveformCanvas samples={waveformSamples} />
 
           <button
             type="button"

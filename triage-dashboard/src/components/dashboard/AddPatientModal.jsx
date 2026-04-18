@@ -9,6 +9,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function AddPatientModal({ isOpen, onClose, onAddPatient, currentSession }) {
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
+  const [registrationType, setRegistrationType] = useState("registered");
   const [error, setError] = useState("");
 
   const lookupResult = useMemo(() => {
@@ -91,6 +92,10 @@ function AddPatientModal({ isOpen, onClose, onAddPatient, currentSession }) {
         </header>
 
         <div className="dashboard-modal__content">
+          <p className="inline-note">
+            After adding a patient, connect a wearable to begin active tracking.
+          </p>
+
           <label htmlFor="lookup-email">Patient Email (lookup)</label>
           <input
             id="lookup-email"
@@ -100,44 +105,75 @@ function AddPatientModal({ isOpen, onClose, onAddPatient, currentSession }) {
             onChange={(event) => setEmail(event.target.value)}
           />
 
-          {lookupResult ? (
-            <p className="inline-note">
-              Registered patient found: <strong>{lookupResult.fullName}</strong>
-            </p>
+          <fieldset className="inline-choice-group">
+            <legend>Is this patient already registered?</legend>
+            <label>
+              <input
+                type="radio"
+                name="registration-type"
+                value="registered"
+                checked={registrationType === "registered"}
+                onChange={(event) => setRegistrationType(event.target.value)}
+              />
+              Yes, registered
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="registration-type"
+                value="unregistered"
+                checked={registrationType === "unregistered"}
+                onChange={(event) => setRegistrationType(event.target.value)}
+              />
+              No, not registered
+            </label>
+          </fieldset>
+
+          {registrationType === "registered" ? (
+            <>
+              {lookupResult ? (
+                <p className="inline-note">
+                  Registered patient found:{" "}
+                  <strong>{lookupResult.fullName}</strong>
+                </p>
+              ) : (
+                <p className="inline-note">
+                  No registered patient match found yet
+                </p>
+              )}
+
+              <button
+                type="button"
+                className="primary-action"
+                onClick={handleLookupAdd}
+              >
+                Add Registered Patient
+              </button>
+            </>
           ) : (
-            <p className="inline-note">No existing patient match yet.</p>
+            <>
+              <label htmlFor="temp-name">Patient Full Name</label>
+              <input
+                id="temp-name"
+                type="text"
+                placeholder="Full name"
+                value={fullName}
+                onChange={(event) => setFullName(event.target.value)}
+              />
+
+              <button
+                type="button"
+                className="secondary-action"
+                onClick={handleTemporaryCreate}
+              >
+                Create Temporary Patient Account
+              </button>
+
+              <p className="inline-note">
+                Temporary accounts are marked for follow-up signup completion
+              </p>
+            </>
           )}
-
-          <button
-            type="button"
-            className="primary-action"
-            onClick={handleLookupAdd}
-          >
-            Add Registered Patient
-          </button>
-
-          <hr />
-
-          <label htmlFor="temp-name">Temporary Patient Full Name</label>
-          <input
-            id="temp-name"
-            type="text"
-            placeholder="Full name"
-            value={fullName}
-            onChange={(event) => setFullName(event.target.value)}
-          />
-
-          <button
-            type="button"
-            className="secondary-action"
-            onClick={handleTemporaryCreate}
-          >
-            Create Temporary Patient Account
-          </button>
-
-          <p className="inline-note">
-            Temporary accounts are marked for follow-up Sign-up completion.
-          </p>
 
           {error ? <p className="auth-error">{error}</p> : null}
         </div>

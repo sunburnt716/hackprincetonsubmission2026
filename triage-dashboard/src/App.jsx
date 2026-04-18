@@ -3,6 +3,7 @@ import AppNavbar from "./components/layout/AppNavbar";
 import { APP_ROUTES } from "./constants/routes";
 import Dashboard from "./pages/Dashboard";
 import DashboardPatientTemplate from "./pages/DashboardPatientTemplate";
+import ForgotPassword from "./pages/ForgotPassword";
 import Login from "./pages/Signin";
 import Settings from "./pages/Settings";
 import Signup from "./pages/Signup";
@@ -28,6 +29,7 @@ function App() {
         />
         <Route path={APP_ROUTES.LOGIN} element={<Login />} />
         <Route path={APP_ROUTES.SIGNUP} element={<Signup />} />
+        <Route path={APP_ROUTES.FORGOT_PASSWORD} element={<ForgotPassword />} />
         <Route path={APP_ROUTES.DASHBOARD} element={<Dashboard />} />
         <Route
           path={APP_ROUTES.DASHBOARD_PATIENT_DETAIL}

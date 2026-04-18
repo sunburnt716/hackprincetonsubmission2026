@@ -91,6 +91,80 @@ Interactive docs: `http://127.0.0.1:8000/docs`
 
 ---
 
+## JSON prototype backend (hackathon mode)
+
+In addition to the database models, the backend now includes JSON-backed prototype files under:
+
+```
+backend/data/
+├── users.json
+├── patients.snapshot.json
+├── device.snapshot.json
+└── events.ndjson
+```
+
+These are exposed through prototype endpoints:
+
+- `GET /api/v1/settings?email=staff.guest@kinovo.local`
+- `PUT /api/v1/settings?email=staff.guest@kinovo.local` with body `{ "mode": "system|light|dark" }`
+- `POST /api/v1/auth/staff/sign-up`
+- `POST /api/v1/auth/staff/log-in`
+- `POST /api/v1/auth/session/refresh`
+- `PUT /api/v1/auth/me/password`
+- `POST /api/v1/auth/password/forgot`
+- `POST /api/v1/auth/password/reset`
+- `DELETE /api/v1/auth/me`
+- `GET /api/v1/dashboard/waiting-room`
+- `GET /api/v1/dashboard/device-health`
+
+Staff auth uses short-lived JWT access tokens. While the dashboard is open, the frontend refreshes the token periodically so active users stay signed in, but idle/closed sessions time out naturally.
+
+Password recovery works in two steps:
+
+1. The user requests a reset token from the sign-in recovery page.
+2. The user copies the demo token into the reset form and chooses a new password.
+
+Signed-in users can also change their password and delete their own account from the Settings page.
+
+For local testing, the seeded demo password is:
+
+`KinovoDemo123!`
+
+The canonical user settings JSON shape is:
+
+```json
+{
+  "users": {
+    "email@domain.com": {
+      "settings": {
+        "preferences": {
+          "theme_mode": "system"
+        }
+      },
+      "name": "User Name",
+      "age": 29,
+      "hospital": "Hospital Name",
+      "position": "RN",
+      "password_hash": "<hashed password>"
+    }
+  }
+}
+```
+
+Prototype schemas are defined in:
+
+```
+backend/app/schemas/auth_schemas.py
+```
+
+and loaded via:
+
+```
+backend/app/auth_store.py
+```
+
+---
+
 ## Project structure
 
 ```
