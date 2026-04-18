@@ -1,0 +1,12 @@
+.placeholder-page {
+  min-height: 100svh;
+  display: grid;
+  place-content: center;
+  padding: 24px;
+  text-align: center;
+}
+
+.placeholder-page p {
+  max-width: 680px;
+  margin: 0 auto;
+}

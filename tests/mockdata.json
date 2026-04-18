@@ -1,0 +1,595 @@
+{
+  "datasetInfo": {
+    "name": "Kinovo Ambulance Mock Data",
+    "version": "1.0.0",
+    "generatedAt": "2026-04-08T12:00:00Z",
+    "purpose": "Bootstrap firmware, BLE, API ingestion, and dashboard feature development with realistic ambulance vitals and offline backfill behavior.",
+    "canonicalSchema": "{patientName, vitals: {bloodOxygen, stress, heartBeat}, timestamp, location}",
+    "notes": [
+      "Canonical key chosen: vitals.bloodOxygen",
+      "All timestamps are ISO-8601 UTC",
+      "Location supports zone names and optional GPS payload",
+      "Transport metadata is included for store-and-forward simulation"
+    ]
+  },
+  "schemaContract": {
+    "requiredFields": [
+      "patientName",
+      "patientId",
+      "vitals.bloodOxygen",
+      "vitals.stress",
+      "vitals.heartBeat",
+      "timestamp",
+      "location"
+    ],
+    "ranges": {
+      "bloodOxygen": {
+        "min": 0,
+        "max": 100,
+        "unit": "%"
+      },
+      "heartBeat": {
+        "min": 20,
+        "max": 220,
+        "unit": "bpm"
+      },
+      "stress": {
+        "min": 0,
+        "max": 100,
+        "unit": "normalized"
+      }
+    },
+    "locationAllowedShapes": [
+      "zone-name-string",
+      "{ zoneName, gps: { latitude, longitude, accuracyMeters } }"
+    ]
+  },
+  "scenarios": [
+    {
+      "scenarioId": "AMB_STABLE_001",
+      "title": "Stable patient during city transfer",
+      "clinicalContext": "Adult patient under observation with no immediate respiratory distress.",
+      "records": [
+        {
+          "patientName": "Jordan Miles",
+          "patientId": "pt_8f3b21",
+          "vitals": {
+            "bloodOxygen": 98,
+            "stress": 34,
+            "heartBeat": 76
+          },
+          "timestamp": "2026-04-08T08:00:00.000Z",
+          "location": "Sector 4",
+          "transportMeta": {
+            "recordId": "rec_stable_0001",
+            "sequenceNumber": 1,
+            "checksum": "8f9ac1d2",
+            "ackState": "acknowledged",
+            "retryCount": 0,
+            "essentialVitalsOnly": false,
+            "bufferedDuringDeadZone": false,
+            "backfillBatchId": null
+          }
+        },
+        {
+          "patientName": "Jordan Miles",
+          "patientId": "pt_8f3b21",
+          "vitals": {
+            "bloodOxygen": 98,
+            "stress": 36,
+            "heartBeat": 77
+          },
+          "timestamp": "2026-04-08T08:00:30.000Z",
+          "location": "Sector 4",
+          "transportMeta": {
+            "recordId": "rec_stable_0002",
+            "sequenceNumber": 2,
+            "checksum": "a0b21ce3",
+            "ackState": "acknowledged",
+            "retryCount": 0,
+            "essentialVitalsOnly": false,
+            "bufferedDuringDeadZone": false,
+            "backfillBatchId": null
+          }
+        },
+        {
+          "patientName": "Jordan Miles",
+          "patientId": "pt_8f3b21",
+          "vitals": {
+            "bloodOxygen": 97,
+            "stress": 35,
+            "heartBeat": 75
+          },
+          "timestamp": "2026-04-08T08:01:00.000Z",
+          "location": "Sector 4",
+          "transportMeta": {
+            "recordId": "rec_stable_0003",
+            "sequenceNumber": 3,
+            "checksum": "d18f40ae",
+            "ackState": "acknowledged",
+            "retryCount": 0,
+            "essentialVitalsOnly": false,
+            "bufferedDuringDeadZone": false,
+            "backfillBatchId": null
+          }
+        }
+      ]
+    },
+    {
+      "scenarioId": "AMB_HYPOXIA_002",
+      "title": "Respiratory decline in transit",
+      "clinicalContext": "Adult with shortness of breath deteriorating before oxygen intervention.",
+      "records": [
+        {
+          "patientName": "Rina Patel",
+          "patientId": "pt_7ca901",
+          "vitals": {
+            "bloodOxygen": 93,
+            "stress": 58,
+            "heartBeat": 104
+          },
+          "timestamp": "2026-04-08T09:10:00.000Z",
+          "location": {
+            "zoneName": "Highway Corridor A",
+            "gps": {
+              "latitude": 12.9374,
+              "longitude": 77.6228,
+              "accuracyMeters": 18
+            }
+          },
+          "transportMeta": {
+            "recordId": "rec_hypoxia_0001",
+            "sequenceNumber": 1,
+            "checksum": "77bc2e44",
+            "ackState": "acknowledged",
+            "retryCount": 0,
+            "essentialVitalsOnly": false,
+            "bufferedDuringDeadZone": false,
+            "backfillBatchId": null
+          }
+        },
+        {
+          "patientName": "Rina Patel",
+          "patientId": "pt_7ca901",
+          "vitals": {
+            "bloodOxygen": 90,
+            "stress": 64,
+            "heartBeat": 110
+          },
+          "timestamp": "2026-04-08T09:10:30.000Z",
+          "location": {
+            "zoneName": "Highway Corridor A",
+            "gps": {
+              "latitude": 12.9381,
+              "longitude": 77.6235,
+              "accuracyMeters": 16
+            }
+          },
+          "transportMeta": {
+            "recordId": "rec_hypoxia_0002",
+            "sequenceNumber": 2,
+            "checksum": "8a3d910f",
+            "ackState": "acknowledged",
+            "retryCount": 0,
+            "essentialVitalsOnly": true,
+            "bufferedDuringDeadZone": false,
+            "backfillBatchId": null
+          }
+        },
+        {
+          "patientName": "Rina Patel",
+          "patientId": "pt_7ca901",
+          "vitals": {
+            "bloodOxygen": 87,
+            "stress": 72,
+            "heartBeat": 118
+          },
+          "timestamp": "2026-04-08T09:11:00.000Z",
+          "location": {
+            "zoneName": "Highway Corridor A",
+            "gps": {
+              "latitude": 12.9387,
+              "longitude": 77.6243,
+              "accuracyMeters": 14
+            }
+          },
+          "transportMeta": {
+            "recordId": "rec_hypoxia_0003",
+            "sequenceNumber": 3,
+            "checksum": "1f4ce8a1",
+            "ackState": "acknowledged",
+            "retryCount": 0,
+            "essentialVitalsOnly": true,
+            "bufferedDuringDeadZone": false,
+            "backfillBatchId": null
+          }
+        },
+        {
+          "patientName": "Rina Patel",
+          "patientId": "pt_7ca901",
+          "vitals": {
+            "bloodOxygen": 91,
+            "stress": 59,
+            "heartBeat": 102
+          },
+          "timestamp": "2026-04-08T09:11:30.000Z",
+          "location": {
+            "zoneName": "Highway Corridor A",
+            "gps": {
+              "latitude": 12.9392,
+              "longitude": 77.6249,
+              "accuracyMeters": 14
+            }
+          },
+          "transportMeta": {
+            "recordId": "rec_hypoxia_0004",
+            "sequenceNumber": 4,
+            "checksum": "6de19bc7",
+            "ackState": "acknowledged",
+            "retryCount": 0,
+            "essentialVitalsOnly": false,
+            "bufferedDuringDeadZone": false,
+            "backfillBatchId": null
+          }
+        }
+      ]
+    },
+    {
+      "scenarioId": "AMB_TRAUMA_003",
+      "title": "Trauma and shock presentation",
+      "clinicalContext": "Road traffic trauma with high sympathetic response and unstable oxygenation.",
+      "records": [
+        {
+          "patientName": "Elias Romero",
+          "patientId": "pt_23de11",
+          "vitals": {
+            "bloodOxygen": 92,
+            "stress": 88,
+            "heartBeat": 132
+          },
+          "timestamp": "2026-04-08T10:15:00.000Z",
+          "location": "Tunnel East Approach",
+          "transportMeta": {
+            "recordId": "rec_trauma_0001",
+            "sequenceNumber": 1,
+            "checksum": "9c3dd11a",
+            "ackState": "acknowledged",
+            "retryCount": 0,
+            "essentialVitalsOnly": true,
+            "bufferedDuringDeadZone": false,
+            "backfillBatchId": null
+          }
+        },
+        {
+          "patientName": "Elias Romero",
+          "patientId": "pt_23de11",
+          "vitals": {
+            "bloodOxygen": 89,
+            "stress": 94,
+            "heartBeat": 141
+          },
+          "timestamp": "2026-04-08T10:15:30.000Z",
+          "location": "Tunnel East Approach",
+          "transportMeta": {
+            "recordId": "rec_trauma_0002",
+            "sequenceNumber": 2,
+            "checksum": "ee4917b5",
+            "ackState": "acknowledged",
+            "retryCount": 0,
+            "essentialVitalsOnly": true,
+            "bufferedDuringDeadZone": false,
+            "backfillBatchId": null
+          }
+        },
+        {
+          "patientName": "Elias Romero",
+          "patientId": "pt_23de11",
+          "vitals": {
+            "bloodOxygen": 91,
+            "stress": 82,
+            "heartBeat": 126
+          },
+          "timestamp": "2026-04-08T10:16:00.000Z",
+          "location": "Tunnel Exit North",
+          "transportMeta": {
+            "recordId": "rec_trauma_0003",
+            "sequenceNumber": 3,
+            "checksum": "42f0ca3d",
+            "ackState": "acknowledged",
+            "retryCount": 0,
+            "essentialVitalsOnly": false,
+            "bufferedDuringDeadZone": false,
+            "backfillBatchId": null
+          }
+        }
+      ]
+    },
+    {
+      "scenarioId": "AMB_DEADZONE_BACKFILL_004",
+      "title": "30-minute dead zone then bulk backfill",
+      "clinicalContext": "Connectivity loss in a low-coverage corridor with delayed sync when reconnecting.",
+      "records": [
+        {
+          "patientName": "Maya Brooks",
+          "patientId": "pt_5ac884",
+          "vitals": {
+            "bloodOxygen": 96,
+            "stress": 49,
+            "heartBeat": 84
+          },
+          "timestamp": "2026-04-08T11:00:00.000Z",
+          "location": "Sector 7 - Underpass",
+          "transportMeta": {
+            "recordId": "rec_deadzone_0001",
+            "sequenceNumber": 1,
+            "checksum": "b7f2a119",
+            "ackState": "pending",
+            "retryCount": 0,
+            "essentialVitalsOnly": false,
+            "bufferedDuringDeadZone": true,
+            "backfillBatchId": "batch_20260408_1100"
+          }
+        },
+        {
+          "patientName": "Maya Brooks",
+          "patientId": "pt_5ac884",
+          "vitals": {
+            "bloodOxygen": 95,
+            "stress": 52,
+            "heartBeat": 87
+          },
+          "timestamp": "2026-04-08T11:10:00.000Z",
+          "location": "Sector 7 - Underpass",
+          "transportMeta": {
+            "recordId": "rec_deadzone_0002",
+            "sequenceNumber": 2,
+            "checksum": "0fd92cb4",
+            "ackState": "pending",
+            "retryCount": 1,
+            "essentialVitalsOnly": false,
+            "bufferedDuringDeadZone": true,
+            "backfillBatchId": "batch_20260408_1100"
+          }
+        },
+        {
+          "patientName": "Maya Brooks",
+          "patientId": "pt_5ac884",
+          "vitals": {
+            "bloodOxygen": 94,
+            "stress": 57,
+            "heartBeat": 92
+          },
+          "timestamp": "2026-04-08T11:20:00.000Z",
+          "location": "Sector 7 - Underpass",
+          "transportMeta": {
+            "recordId": "rec_deadzone_0003",
+            "sequenceNumber": 3,
+            "checksum": "35a88cd0",
+            "ackState": "failed",
+            "retryCount": 2,
+            "essentialVitalsOnly": true,
+            "bufferedDuringDeadZone": true,
+            "backfillBatchId": "batch_20260408_1100"
+          }
+        },
+        {
+          "patientName": "Maya Brooks",
+          "patientId": "pt_5ac884",
+          "vitals": {
+            "bloodOxygen": 95,
+            "stress": 51,
+            "heartBeat": 86
+          },
+          "timestamp": "2026-04-08T11:30:00.000Z",
+          "location": {
+            "zoneName": "North Ring Road",
+            "gps": {
+              "latitude": 12.9621,
+              "longitude": 77.5906,
+              "accuracyMeters": 22
+            }
+          },
+          "transportMeta": {
+            "recordId": "rec_deadzone_0004",
+            "sequenceNumber": 4,
+            "checksum": "d71be54e",
+            "ackState": "acknowledged",
+            "retryCount": 1,
+            "essentialVitalsOnly": false,
+            "bufferedDuringDeadZone": true,
+            "backfillBatchId": "batch_20260408_1100"
+          }
+        }
+      ]
+    },
+    {
+      "scenarioId": "AMB_SHAKYLINK_005",
+      "title": "Shaky-link interruption and resume",
+      "clinicalContext": "Bulk transfer interrupted multiple times and resumed from stored offset.",
+      "records": [
+        {
+          "patientName": "Noah Singh",
+          "patientId": "pt_11fbb8",
+          "vitals": {
+            "bloodOxygen": 97,
+            "stress": 41,
+            "heartBeat": 79
+          },
+          "timestamp": "2026-04-08T12:05:00.000Z",
+          "location": "Sector 2",
+          "transportMeta": {
+            "recordId": "rec_shaky_0001",
+            "sequenceNumber": 1,
+            "checksum": "6c011f83",
+            "ackState": "acknowledged",
+            "retryCount": 0,
+            "essentialVitalsOnly": false,
+            "bufferedDuringDeadZone": true,
+            "backfillBatchId": "batch_20260408_1205"
+          }
+        },
+        {
+          "patientName": "Noah Singh",
+          "patientId": "pt_11fbb8",
+          "vitals": {
+            "bloodOxygen": 96,
+            "stress": 44,
+            "heartBeat": 82
+          },
+          "timestamp": "2026-04-08T12:05:30.000Z",
+          "location": "Sector 2",
+          "transportMeta": {
+            "recordId": "rec_shaky_0002",
+            "sequenceNumber": 2,
+            "checksum": "2a66de0b",
+            "ackState": "pending",
+            "retryCount": 1,
+            "essentialVitalsOnly": false,
+            "bufferedDuringDeadZone": true,
+            "backfillBatchId": "batch_20260408_1205"
+          }
+        },
+        {
+          "patientName": "Noah Singh",
+          "patientId": "pt_11fbb8",
+          "vitals": {
+            "bloodOxygen": 96,
+            "stress": 43,
+            "heartBeat": 81
+          },
+          "timestamp": "2026-04-08T12:06:00.000Z",
+          "location": "Sector 2",
+          "transportMeta": {
+            "recordId": "rec_shaky_0003",
+            "sequenceNumber": 3,
+            "checksum": "f34c5bbd",
+            "ackState": "acknowledged",
+            "retryCount": 2,
+            "essentialVitalsOnly": false,
+            "bufferedDuringDeadZone": true,
+            "backfillBatchId": "batch_20260408_1205"
+          }
+        }
+      ]
+    },
+    {
+      "scenarioId": "AMB_SENSOR_DROPOUT_006",
+      "title": "Temporary sensor degradation with essential-vitals mode",
+      "clinicalContext": "GSR channel becomes noisy; system continues transmitting essential vitals.",
+      "records": [
+        {
+          "patientName": "Leah Kim",
+          "patientId": "pt_90ce44",
+          "vitals": {
+            "bloodOxygen": 97,
+            "stress": 39,
+            "heartBeat": 81
+          },
+          "timestamp": "2026-04-08T12:45:00.000Z",
+          "location": "Sector 1 - Dispatch Route",
+          "transportMeta": {
+            "recordId": "rec_dropout_0001",
+            "sequenceNumber": 1,
+            "checksum": "a9e4032d",
+            "ackState": "acknowledged",
+            "retryCount": 0,
+            "essentialVitalsOnly": false,
+            "bufferedDuringDeadZone": false,
+            "backfillBatchId": null
+          }
+        },
+        {
+          "patientName": "Leah Kim",
+          "patientId": "pt_90ce44",
+          "vitals": {
+            "bloodOxygen": 97,
+            "stress": null,
+            "heartBeat": 82
+          },
+          "timestamp": "2026-04-08T12:45:30.000Z",
+          "location": "Sector 1 - Dispatch Route",
+          "transportMeta": {
+            "recordId": "rec_dropout_0002",
+            "sequenceNumber": 2,
+            "checksum": "1d74f7c9",
+            "ackState": "acknowledged",
+            "retryCount": 0,
+            "essentialVitalsOnly": true,
+            "bufferedDuringDeadZone": false,
+            "backfillBatchId": null
+          }
+        },
+        {
+          "patientName": "Leah Kim",
+          "patientId": "pt_90ce44",
+          "vitals": {
+            "bloodOxygen": 98,
+            "stress": 42,
+            "heartBeat": 80
+          },
+          "timestamp": "2026-04-08T12:46:00.000Z",
+          "location": "Sector 1 - Dispatch Route",
+          "transportMeta": {
+            "recordId": "rec_dropout_0003",
+            "sequenceNumber": 3,
+            "checksum": "b387ac71",
+            "ackState": "acknowledged",
+            "retryCount": 0,
+            "essentialVitalsOnly": false,
+            "bufferedDuringDeadZone": false,
+            "backfillBatchId": null
+          }
+        }
+      ]
+    },
+    {
+      "scenarioId": "AMB_AGE_EDGECASES_007",
+      "title": "Age-sensitive interpretation samples",
+      "clinicalContext": "Provides elderly and pediatric values that are realistic but clinically different from adult defaults.",
+      "records": [
+        {
+          "patientName": "Harold Finch",
+          "patientId": "pt_6d1ab2",
+          "vitals": {
+            "bloodOxygen": 95,
+            "stress": 47,
+            "heartBeat": 52
+          },
+          "timestamp": "2026-04-08T13:10:00.000Z",
+          "location": "Sector 9",
+          "transportMeta": {
+            "recordId": "rec_age_0001",
+            "sequenceNumber": 1,
+            "checksum": "9fcd1024",
+            "ackState": "acknowledged",
+            "retryCount": 0,
+            "essentialVitalsOnly": false,
+            "bufferedDuringDeadZone": false,
+            "backfillBatchId": null
+          }
+        },
+        {
+          "patientName": "Aria Gomez",
+          "patientId": "pt_f1310e",
+          "vitals": {
+            "bloodOxygen": 99,
+            "stress": 55,
+            "heartBeat": 122
+          },
+          "timestamp": "2026-04-08T13:10:30.000Z",
+          "location": "Sector 9",
+          "transportMeta": {
+            "recordId": "rec_age_0002",
+            "sequenceNumber": 2,
+            "checksum": "5be7d8a2",
+            "ackState": "acknowledged",
+            "retryCount": 0,
+            "essentialVitalsOnly": false,
+            "bufferedDuringDeadZone": false,
+            "backfillBatchId": null
+          }
+        }
+      ]
+    }
+  ]
+}

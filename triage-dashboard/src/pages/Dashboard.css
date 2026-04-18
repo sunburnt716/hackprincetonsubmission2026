@@ -1,0 +1,301 @@
+.dashboard-shell {
+  min-height: 100svh;
+  padding: 42px;
+  box-sizing: border-box;
+  display: grid;
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.dashboard-header h1 {
+  margin: 0 0 8px;
+  font-size: 2rem;
+}
+
+.status-pill {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: var(--accent-bg);
+  color: var(--text-h);
+}
+
+.dashboard-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.toggle-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.primary-action,
+.secondary-action {
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--accent-bg);
+  color: var(--text-h);
+  padding: 10px 14px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.secondary-action {
+  border-color: var(--border);
+  background: transparent;
+}
+
+.waiting-room-scroll {
+  max-height: 62svh;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.waiting-room-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.patient-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  background: var(--bg);
+  color: var(--text-h);
+  text-align: left;
+}
+
+.patient-card.critical {
+  border-color: #ef4444;
+  animation: criticalPulse 1s infinite;
+}
+
+.patient-card.stale {
+  opacity: 0.7;
+}
+
+.patient-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.patient-card__header h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.patient-card__vitals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.patient-card__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.patient-card__actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.acuity-sparkline,
+.waveform-shell {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 6px;
+  margin: 8px 0;
+}
+
+.acuity-sparkline__svg {
+  width: 100%;
+  height: 72px;
+  display: block;
+}
+
+.sparkline {
+  fill: none;
+  stroke-width: 2.2;
+}
+
+.sparkline--bpm {
+  stroke: #f59e0b;
+}
+
+.sparkline--spo2 {
+  stroke: #3b82f6;
+}
+
+.waveform-canvas {
+  width: 100%;
+  height: 180px;
+  display: block;
+}
+
+.stale-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgb(0 0 0 / 42%);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  border-radius: 10px;
+}
+
+.patient-card__critical-message {
+  margin: 10px 0 0;
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.badge {
+  border: 1px solid var(--accent-border);
+  background: var(--accent-bg);
+  border-radius: 999px;
+  padding: 4px 8px;
+}
+
+.device-health {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.device-health h2 {
+  margin: 0 0 14px;
+}
+
+.device-health__grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.device-health__card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.device-health__card h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 45%);
+  display: grid;
+  place-items: center;
+  z-index: 50;
+  padding: 20px;
+}
+
+.dashboard-modal {
+  width: min(640px, 100%);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg);
+  color: var(--text-h);
+  max-height: 85svh;
+  overflow: auto;
+}
+
+.dashboard-modal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.dashboard-modal__header h2 {
+  margin: 0;
+}
+
+.dashboard-modal__header button {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: transparent;
+  color: var(--text-h);
+}
+
+.dashboard-modal__content {
+  display: grid;
+  gap: 10px;
+  padding: 16px 18px 20px;
+}
+
+.dashboard-modal__content input {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.inline-note {
+  color: var(--text);
+  font-size: 0.92rem;
+}
+
+@keyframes criticalPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgb(239 68 68 / 45%);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgb(239 68 68 / 0%);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgb(239 68 68 / 0%);
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard-shell {
+    padding: 20px;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+  }
+
+  .patient-card__vitals {
+    grid-template-columns: 1fr;
+  }
+
+  .waiting-room-grid,
+  .device-health__grid {
+    grid-template-columns: 1fr;
+  }
+}
