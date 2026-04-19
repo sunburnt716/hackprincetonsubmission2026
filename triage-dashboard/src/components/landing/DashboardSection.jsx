@@ -1,33 +1,39 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import {
+  buildInitialQueueFromMockData,
+  sortTriageQueue,
+} from "../../services/triageService.mock";
 
-const INITIAL_QUEUE = [
-  { id: "4821", name: "M · 62", chief: "Chest pain", priority: "Critical", tone: "critical", hr: 128, spo2: 91, pulse: true },
-  { id: "3377", name: "F · 41", chief: "Dyspnea", priority: "Urgent", tone: "urgent", hr: 112, spo2: 94 },
-  { id: "2990", name: "M · 55", chief: "Laceration", priority: "Urgent", tone: "urgent", hr: 98, spo2: 97 },
-  { id: "2204", name: "M · 29", chief: "Fever", priority: "Watch", tone: "watch", hr: 98, spo2: 98 },
-  { id: "1958", name: "F · 73", chief: "Post-op obs", priority: "Stable", tone: "stable", hr: 74, spo2: 99 },
-];
-
-const TONE_STYLES = {
-  critical: "border-[color:var(--color-signal-critical)]/25 bg-[color:var(--color-signal-critical)]/5",
-  urgent: "border-[color:var(--color-signal-urgent)]/25 bg-[color:var(--color-signal-urgent)]/5",
-  watch: "border-[color:var(--color-signal-watch)]/25 bg-[color:var(--color-signal-watch)]/5",
-  stable: "border-ink-100 bg-white",
+const CONNECTION_LABEL = {
+  connected: "Connected",
+  pending_reads: "Pending reads",
+  disconnected: "Disconnected",
+  unpaired: "Unpaired",
 };
 
-const TONE_DOT = {
-  critical: "bg-[color:var(--color-signal-critical)]",
-  urgent: "bg-[color:var(--color-signal-urgent)]",
-  watch: "bg-[color:var(--color-signal-watch)]",
-  stable: "bg-[color:var(--color-signal-stable)]",
+const velocityFor = (ui) => {
+  const delta = ui.signedBpmDelta ?? 0;
+  if (delta > 0) {
+    return { arrow: "↑", label: "Rising", mag: delta, tone: "rising" };
+  }
+  if (delta < 0) {
+    return { arrow: "↓", label: "Falling", mag: Math.abs(delta), tone: "falling" };
+  }
+  return { arrow: "→", label: "Steady", mag: 0, tone: "steady" };
 };
 
-const TONE_TEXT = {
-  critical: "text-[color:var(--color-signal-critical)]",
-  urgent: "text-[color:var(--color-signal-urgent)]",
-  watch: "text-[color:var(--color-signal-watch)]",
-  stable: "text-[color:var(--color-signal-stable)]",
+const VELOCITY_TONE = {
+  rising: "text-[color:var(--color-signal-critical)]",
+  falling: "text-[color:var(--color-signal-stable)]",
+  steady: "text-ink-400",
+};
+
+const CONNECTION_TONE = {
+  connected: "text-[color:var(--color-signal-stable)] bg-[color:var(--color-signal-stable)]/10",
+  pending_reads: "text-[color:var(--color-signal-watch)] bg-[color:var(--color-signal-watch)]/10",
+  disconnected: "text-[color:var(--color-signal-critical)] bg-[color:var(--color-signal-critical)]/10",
+  unpaired: "text-ink-400 bg-ink-100/60",
 };
 
 const FEATURES = [
@@ -49,7 +55,15 @@ const FEATURES = [
     body: "One board per department. Designed for peripheral glance — priority tone, chief complaint, and the vital driving the rank.",
     icon: (
       <>
-        <rect x="3" y="4" width="14" height="12" rx="2" stroke="currentColor" strokeWidth="1.6" />
+        <rect
+          x="3"
+          y="4"
+          width="14"
+          height="12"
+          rx="2"
+          stroke="currentColor"
+          strokeWidth="1.6"
+        />
         <path d="M3 9h14" stroke="currentColor" strokeWidth="1.6" />
       </>
     ),
@@ -70,12 +84,28 @@ const FEATURES = [
 ];
 
 function PatientRow({ patient, highlight }) {
+  const { patientName, patientId, clinicalPayload, uiState, transportMeta } =
+    patient;
+  const v = velocityFor(uiState);
+  const connStatus = transportMeta?.connectionStatus ?? "unpaired";
+  const stress = clinicalPayload.vitals.stress;
+
   return (
     <motion.div
       layout
       transition={{ type: "spring", stiffness: 260, damping: 28 }}
-      className={`relative flex items-center gap-3 rounded-xl border px-3.5 py-3 ${TONE_STYLES[patient.tone]}`}
+      className={`relative flex items-center gap-3 rounded-xl border px-3.5 py-3 ${
+        uiState.isCritical
+          ? "border-[color:var(--color-signal-critical)]/25 bg-[color:var(--color-signal-critical)]/5"
+          : "border-ink-100 bg-white"
+      }`}
     >
+      {uiState.isCritical ? (
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 left-0 w-[3px] rounded-l-xl bg-gradient-to-b from-[color:var(--color-signal-critical)] to-[color:var(--color-signal-urgent)]"
+        />
+      ) : null}
       {highlight ? (
         <span
           aria-hidden
@@ -83,47 +113,117 @@ function PatientRow({ patient, highlight }) {
           style={{ animation: "landing-pulse-ring 1.6s ease-out 1" }}
         />
       ) : null}
-      <span className={`h-2 w-2 shrink-0 rounded-full ${TONE_DOT[patient.tone]}`} />
-      <div className="flex flex-1 items-baseline gap-2">
-        <span className="text-[12.5px] font-semibold text-ink-800">#{patient.id}</span>
-        <span className="text-[11.5px] text-ink-400">{patient.name}</span>
+
+      <span
+        className={`h-2 w-2 shrink-0 rounded-full ${
+          uiState.isCritical
+            ? "bg-[color:var(--color-signal-critical)]"
+            : "bg-[color:var(--color-signal-stable)]"
+        }`}
+      />
+
+      <div className="flex min-w-0 flex-1 items-baseline gap-2">
+        <span className="truncate text-[13px] font-semibold text-ink-800">
+          {patientName}
+        </span>
+        <span className="shrink-0 font-mono text-[10.5px] text-ink-400">
+          {patientId}
+        </span>
       </div>
-      <span className="hidden text-[11.5px] text-ink-500 sm:inline">
-        {patient.chief}
-      </span>
-      <span className={`text-[11px] font-semibold uppercase tracking-[0.1em] ${TONE_TEXT[patient.tone]}`}>
-        {patient.priority}
-      </span>
-      <div className="hidden items-center gap-2 text-[11px] font-mono text-ink-500 md:flex">
-        <span>{patient.hr} bpm</span>
-        <span className="text-ink-200">·</span>
-        <span>{patient.spo2}%</span>
+
+      <div className="hidden items-center gap-1.5 sm:flex">
+        <span className="text-[10px] font-medium uppercase tracking-[0.1em] text-ink-300">
+          SpO₂
+        </span>
+        <span className="font-mono text-[12.5px] font-semibold text-ink-700">
+          {clinicalPayload.vitals.bloodOxygen}%
+        </span>
       </div>
+
+      <div className="flex items-center gap-1.5">
+        <span className="text-[10px] font-medium uppercase tracking-[0.1em] text-ink-300">
+          BPM
+        </span>
+        <span className="font-mono text-[12.5px] font-semibold text-ink-700">
+          {clinicalPayload.vitals.heartBeat}
+        </span>
+      </div>
+
+      <div className="hidden items-center gap-1.5 md:flex">
+        <span className="text-[10px] font-medium uppercase tracking-[0.1em] text-ink-300">
+          Stress
+        </span>
+        <span className="font-mono text-[12.5px] font-semibold text-ink-700">
+          {stress == null ? "—" : stress}
+        </span>
+      </div>
+
+      <span
+        className={`hidden shrink-0 font-mono text-[11.5px] ${VELOCITY_TONE[v.tone]} lg:inline`}
+      >
+        {v.arrow} {v.label} {v.mag} bpm
+      </span>
+
+      <span
+        className={`hidden shrink-0 rounded-full px-2 py-0.5 text-[10.5px] font-medium lg:inline ${CONNECTION_TONE[connStatus]}`}
+      >
+        {CONNECTION_LABEL[connStatus] ?? "Unpaired"}
+      </span>
+
+      {uiState.isCritical ? (
+        <span className="absolute bottom-1 left-6 text-[10.5px] font-semibold uppercase tracking-[0.1em] text-[color:var(--color-signal-critical)] opacity-80">
+          {uiState.criticalReason}
+        </span>
+      ) : null}
     </motion.div>
   );
 }
 
+function escalatePatient(patient) {
+  const nextOxygen = Math.max(
+    82,
+    Math.min(patient.clinicalPayload.vitals.bloodOxygen, 89) - 2,
+  );
+  return {
+    ...patient,
+    clinicalPayload: {
+      ...patient.clinicalPayload,
+      vitals: {
+        ...patient.clinicalPayload.vitals,
+        bloodOxygen: nextOxygen,
+        heartBeat: patient.clinicalPayload.vitals.heartBeat + 18,
+      },
+    },
+    uiState: {
+      ...patient.uiState,
+      isCritical: true,
+      criticalReason: "Critical oxygen drop",
+      bpmDelta: 18,
+      signedBpmDelta: 18,
+      heartBeatDirection: "rising",
+    },
+  };
+}
+
 function DashboardMockup() {
-  const [queue, setQueue] = useState(INITIAL_QUEUE);
+  const [queue, setQueue] = useState(() =>
+    sortTriageQueue(buildInitialQueueFromMockData()),
+  );
   const [highlightId, setHighlightId] = useState(null);
 
   useEffect(() => {
-    // Simulate live re-prioritization: patient #2204 deteriorates after 2.5s
+    // Simulate live re-prioritization: escalate the first non-critical patient.
+    const target = queue.find((p) => !p.uiState.isCritical);
+    if (!target) return undefined;
+
     const t1 = setTimeout(() => {
-      setQueue((q) => {
-        const next = q.map((p) =>
-          p.id === "2204"
-            ? { ...p, tone: "critical", priority: "Critical", hr: 138, spo2: 88, chief: "Fever · ↓ SpO₂" }
-            : p,
+      setQueue((current) => {
+        const next = current.map((p) =>
+          p.patientId === target.patientId ? escalatePatient(p) : p,
         );
-        // Move #2204 to top
-        next.sort((a, b) => {
-          const order = { critical: 0, urgent: 1, watch: 2, stable: 3 };
-          return order[a.tone] - order[b.tone];
-        });
-        return next;
+        return sortTriageQueue(next);
       });
-      setHighlightId("2204");
+      setHighlightId(target.patientId);
     }, 2500);
 
     const t2 = setTimeout(() => setHighlightId(null), 5200);
@@ -132,6 +232,7 @@ function DashboardMockup() {
       clearTimeout(t1);
       clearTimeout(t2);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -162,79 +263,45 @@ function DashboardMockup() {
               />
               <circle cx="6" cy="6" r="2" stroke="currentColor" strokeWidth="1.2" />
             </svg>
-            kinovo.health/portal/triage
+            kinova.health/portal/triage
           </div>
-          <span className="text-[11px] font-medium text-ink-400">ED West · Live</span>
+          <span className="text-[11px] font-medium text-ink-400">
+            ED West · Live
+          </span>
         </div>
 
-        {/* Body */}
-        <div className="grid gap-5 p-5 md:grid-cols-[180px_1fr] md:gap-6 md:p-6">
-          {/* Side filters */}
-          <aside className="hidden flex-col gap-1.5 md:flex">
-            <p className="px-2 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-ink-300">
-              Filters
-            </p>
-            {[
-              { label: "All patients", count: 24, active: true },
-              { label: "Critical", count: 2 },
-              { label: "Urgent", count: 5 },
-              { label: "Watch", count: 8 },
-              { label: "Stable", count: 9 },
-            ].map((f) => (
-              <button
-                key={f.label}
-                type="button"
-                className={`flex items-center justify-between rounded-lg px-2.5 py-2 text-left text-[12.5px] transition-colors ${
-                  f.active
-                    ? "bg-ink-800 text-white"
-                    : "text-ink-500 hover:bg-ink-50"
-                }`}
-              >
-                <span>{f.label}</span>
+        {/* Body — full-width queue, matching the real portal layout */}
+        <div className="p-5 md:p-6">
+          <div className="mb-4 flex items-center justify-between">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-400">
+                Active Queue
+              </p>
+              <p className="text-[13px] font-medium text-ink-700">
+                Auto-sorted by clinical priority
+              </p>
+            </div>
+            <div className="flex items-center gap-2 rounded-full border border-ink-100 bg-white px-3 py-1 text-[11px] font-medium text-ink-500">
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[color:var(--color-signal-stable)]">
                 <span
-                  className={`rounded px-1.5 py-0.5 text-[10.5px] font-mono ${
-                    f.active ? "bg-white/15" : "bg-ink-100/80 text-ink-500"
-                  }`}
-                >
-                  {f.count}
-                </span>
-              </button>
-            ))}
-          </aside>
-
-          {/* Queue */}
-          <div>
-            <div className="mb-3 flex items-center justify-between">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-400">
-                  Active Queue
-                </p>
-                <p className="text-[13px] font-medium text-ink-700">
-                  Auto-sorted by clinical priority
-                </p>
-              </div>
-              <div className="flex items-center gap-2 rounded-full border border-ink-100 bg-white px-3 py-1 text-[11px] font-medium text-ink-500">
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[color:var(--color-signal-stable)]">
-                  <span
-                    className="absolute inset-0 rounded-full bg-[color:var(--color-signal-stable)]"
-                    style={{ animation: "landing-pulse-ring 2s ease-out infinite" }}
-                  />
-                </span>
-                Streaming
-              </div>
+                  className="absolute inset-0 rounded-full bg-[color:var(--color-signal-stable)]"
+                  style={{ animation: "landing-pulse-ring 2s ease-out infinite" }}
+                />
+              </span>
+              Streaming
             </div>
+          </div>
 
-            <div className="flex flex-col gap-2">
-              <AnimatePresence initial={false}>
-                {queue.map((p) => (
-                  <PatientRow
-                    key={p.id}
-                    patient={p}
-                    highlight={highlightId === p.id}
-                  />
-                ))}
-              </AnimatePresence>
-            </div>
+          <div className="flex flex-col gap-2">
+            <AnimatePresence initial={false}>
+              {queue.map((p) => (
+                <PatientRow
+                  key={p.patientId}
+                  patient={p}
+                  highlight={highlightId === p.patientId}
+                />
+              ))}
+            </AnimatePresence>
           </div>
         </div>
       </div>
@@ -246,7 +313,7 @@ function DashboardSection() {
   return (
     <section
       id="dashboard"
-      className="relative overflow-hidden border-t border-ink-100 bg-gradient-to-b from-ink-50/40 to-white py-20 lg:py-28"
+      className="relative scroll-mt-20 overflow-hidden border-t border-ink-100 bg-gradient-to-b from-ink-50/40 to-white py-20 lg:py-28"
     >
       <div className="mx-auto max-w-[1200px] px-6 lg:px-10">
         <div className="mx-auto max-w-[680px] text-center">

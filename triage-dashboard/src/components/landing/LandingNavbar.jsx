@@ -3,31 +3,52 @@ import { Link } from "react-router-dom";
 import { APP_ROUTES } from "../../constants/routes";
 
 const NAV_LINKS = [
-  { label: "Platform", href: "#dashboard" },
+  { label: "Dashboard", href: "#dashboard" },
   { label: "Device", href: "#device" },
-  { label: "Hospitals", href: "#stats" },
 ];
 
+function smoothScrollTo(hash) {
+  const target = document.querySelector(hash);
+  if (!target) return;
+  target.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 function LandingNavbar() {
-  const [scrolled, setScrolled] = useState(false);
+  // `revealed` = user has scrolled past the hero CTA, so the full navbar shows.
+  const [revealed, setRevealed] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const sentinel = document.getElementById("hero-cta-row");
+    if (!sentinel) return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setRevealed(!entry.isIntersecting),
+      { threshold: 0 },
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
   }, []);
 
   return (
     <header
       className={[
-        "sticky top-0 z-50 w-full transition-all duration-300",
-        scrolled
-          ? "backdrop-blur-xl bg-white/75 border-b border-ink-100/70 shadow-[0_1px_0_rgba(15,16,32,0.04)]"
-          : "bg-white/0 border-b border-transparent",
+        "fixed inset-x-0 top-0 z-50 transition-transform duration-300 ease-out",
+        revealed ? "translate-y-0" : "translate-y-0",
       ].join(" ")}
     >
-      <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-6 lg:px-10">
+      {/* Banner background — fades in once the hero CTA is offscreen. */}
+      <div
+        aria-hidden
+        className={[
+          "absolute inset-0 transition-all duration-300",
+          revealed
+            ? "backdrop-blur-xl bg-white/92 border-b border-ink-200/80 shadow-[0_6px_24px_-12px_rgba(15,16,32,0.18)]"
+            : "pointer-events-none opacity-0",
+        ].join(" ")}
+      />
+
+      <div className="relative mx-auto flex h-14 max-w-[1200px] items-center justify-between px-6 lg:h-16 lg:px-10">
+        {/* Always-visible logo */}
         <Link
           to={APP_ROUTES.ROOT}
           className="flex items-center gap-2.5 text-ink-800"
@@ -49,11 +70,22 @@ function LandingNavbar() {
           <span className="wordmark text-[19px] leading-none">Kinova</span>
         </Link>
 
-        <nav className="hidden items-center gap-7 md:flex">
+        {/* Nav links — only visible after hero */}
+        <nav
+          className={[
+            "hidden items-center gap-7 transition-opacity duration-300 md:flex",
+            revealed ? "opacity-100" : "pointer-events-none opacity-0",
+          ].join(" ")}
+        >
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}
               href={link.href}
+              onClick={(e) => {
+                e.preventDefault();
+                smoothScrollTo(link.href);
+                history.replaceState(null, "", link.href);
+              }}
               className="text-[13.5px] font-medium text-ink-500 transition-colors hover:text-ink-800"
             >
               {link.label}
@@ -61,13 +93,13 @@ function LandingNavbar() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
-          <Link
-            to={APP_ROUTES.LOGIN}
-            className="hidden rounded-full px-4 py-2 text-[13.5px] font-medium text-ink-600 transition-colors hover:text-ink-800 sm:inline-flex"
-          >
-            Patient Login
-          </Link>
+        {/* CTA — only visible after hero */}
+        <div
+          className={[
+            "flex items-center gap-2 transition-opacity duration-300",
+            revealed ? "opacity-100" : "pointer-events-none opacity-0",
+          ].join(" ")}
+        >
           <Link
             to={APP_ROUTES.LOGIN}
             className="inline-flex items-center gap-1.5 rounded-full bg-ink-800 px-4 py-2 text-[13.5px] font-medium text-white shadow-[0_8px_20px_-8px_rgba(8,9,26,0.5)] transition-all hover:-translate-y-px hover:bg-ink-900"

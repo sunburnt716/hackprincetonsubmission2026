@@ -37,3 +37,7 @@ lerna-debug.log*
 *.sln
 *.sw?
 .claude
+
+# Playwright / local dev screenshots
+.playwright-mcp/
+*.png

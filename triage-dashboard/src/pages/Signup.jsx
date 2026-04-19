@@ -1,20 +1,15 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ACCOUNT_TYPE_OPTIONS, ACCOUNT_TYPES } from "../constants/accountTypes";
+import { ACCOUNT_TYPES } from "../constants/accountTypes";
 import { APP_ROUTES } from "../constants/routes";
 import { submitSignup } from "../services/authService.mock";
 import "./Auth.css";
 
 const INITIAL_STATE = {
-  accountType: ACCOUNT_TYPES.PATIENT,
   fullName: "",
   email: "",
   password: "",
   confirmPassword: "",
-  age: "",
-  knownConditions: "",
-  currentMedications: "",
-  emergencyContact: "",
   staffRole: "",
   hospitalName: "",
   facilityId: "",
@@ -23,17 +18,6 @@ const INITIAL_STATE = {
 };
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-const PATIENT_FIELDS = [
-  { name: "age", label: "Age", type: "number" },
-  { name: "knownConditions", label: "Known Conditions", type: "text" },
-  { name: "currentMedications", label: "Current Medications", type: "text" },
-  {
-    name: "emergencyContact",
-    label: "Emergency Contact (Optional)",
-    type: "text",
-  },
-];
 
 const STAFF_FIELDS = [
   { name: "staffRole", label: "Staff Role", type: "text" },
@@ -49,21 +33,9 @@ function Signup() {
   const [error, setError] = useState("");
   const [note, setNote] = useState("");
 
-  const dynamicFields = useMemo(() => {
-    if (formData.accountType === ACCOUNT_TYPES.STAFF) {
-      return STAFF_FIELDS;
-    }
-
-    return PATIENT_FIELDS;
-  }, [formData.accountType]);
-
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((current) => ({ ...current, [name]: value }));
-  };
-
-  const handleAccountTypeSelect = (accountType) => {
-    setFormData((current) => ({ ...current, accountType }));
   };
 
   const validate = () => {
@@ -87,32 +59,16 @@ function Signup() {
       return "Passwords do not match.";
     }
 
-    if (formData.accountType === ACCOUNT_TYPES.PATIENT) {
-      if (!formData.age.trim() || Number(formData.age) <= 0) {
-        return "Please provide a valid age for patient Sign-up.";
-      }
-
-      if (!formData.knownConditions.trim()) {
-        return "Please provide known conditions for patient Sign-up.";
-      }
-
-      if (!formData.currentMedications.trim()) {
-        return "Please provide current medications for patient Sign-up.";
-      }
-
-      return "";
-    }
-
     if (!formData.staffRole.trim()) {
-      return "Please provide a staff role for staff Sign-up.";
+      return "Please provide a staff role.";
     }
 
     if (!formData.hospitalName.trim()) {
-      return "Please provide a hospital name for staff Sign-up.";
+      return "Please provide a hospital name.";
     }
 
     if (!formData.facilityId.trim()) {
-      return "Please provide a facility ID for staff Sign-up.";
+      return "Please provide a facility ID.";
     }
 
     return "";
@@ -132,15 +88,11 @@ function Signup() {
 
     try {
       const response = await submitSignup({
-        accountType: formData.accountType,
+        accountType: ACCOUNT_TYPES.STAFF,
         fullName: formData.fullName.trim(),
         email: formData.email.trim(),
         password: formData.password,
         profile: {
-          age: formData.age,
-          knownConditions: formData.knownConditions,
-          currentMedications: formData.currentMedications,
-          emergencyContact: formData.emergencyContact,
           staffRole: formData.staffRole,
           hospitalName: formData.hospitalName,
           facilityId: formData.facilityId,
@@ -153,12 +105,7 @@ function Signup() {
         `Endpoint: ${response.endpoint} | Login ID: ${response.payload.loginId}`,
       );
 
-      if (formData.accountType === ACCOUNT_TYPES.STAFF) {
-        navigate(APP_ROUTES.STAFF_HOME);
-        return;
-      }
-
-      navigate(APP_ROUTES.PATIENT_HOME);
+      navigate(APP_ROUTES.STAFF_HOME);
     } catch (submitError) {
       const message =
         submitError instanceof Error
@@ -166,7 +113,7 @@ function Signup() {
           : "Unable to complete Sign-up right now.";
 
       setError(
-        `Sign-up failed before redirect. ${message} If this is a staff account, confirm backend is running at http://127.0.0.1:8000.`,
+        `Sign-up failed before redirect. ${message} Confirm the backend is running at http://127.0.0.1:8000.`,
       );
     }
   };
@@ -174,10 +121,9 @@ function Signup() {
   return (
     <main className="auth-shell">
       <section className="auth-card" aria-labelledby="signup-title">
-        <h1 id="signup-title">Sign-up</h1>
+        <h1 id="signup-title">Hospital Staff Sign-up</h1>
         <p className="auth-subtext">
-          Patient accounts collect basic medical context. Hospital staff
-          accounts are created immediately for hackathon testing.
+          Create a hospital staff account to access the triage portal.
         </p>
 
         <nav className="auth-tabs" aria-label="Authentication pages">
@@ -188,28 +134,6 @@ function Signup() {
             Sign-up
           </Link>
         </nav>
-
-        <div
-          className="auth-type-toggle"
-          role="group"
-          aria-label="Account type selector"
-        >
-          <p>Account Type</p>
-          <div className="auth-type-options">
-            {ACCOUNT_TYPE_OPTIONS.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                className={`auth-type-option ${
-                  formData.accountType === option.value ? "selected" : ""
-                }`}
-                onClick={() => handleAccountTypeSelect(option.value)}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-        </div>
 
         <form className="auth-form" onSubmit={handleSubmit} noValidate>
           <div className="auth-field">
@@ -256,7 +180,7 @@ function Signup() {
             />
           </div>
 
-          {dynamicFields.map((field) => (
+          {STAFF_FIELDS.map((field) => (
             <div key={field.name} className="auth-field--full">
               <label htmlFor={field.name}>{field.label}</label>
               <input
