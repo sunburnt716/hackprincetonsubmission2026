@@ -1,78 +1,44 @@
-import { useMemo, useState } from "react";
-import {
-  createTemporaryPatientAccount,
-  findRegisteredAccountByEmail,
-} from "../../services/authService.mock";
+import { useState } from "react";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function AddPatientModal({ isOpen, onClose, onAddPatient, currentSession }) {
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
-  const [registrationType, setRegistrationType] = useState("registered");
+  const [temporary, setTemporary] = useState(true);
   const [error, setError] = useState("");
-
-  const lookupResult = useMemo(() => {
-    if (!EMAIL_REGEX.test(email.trim())) {
-      return null;
-    }
-
-    return findRegisteredAccountByEmail(email);
-  }, [email]);
 
   if (!isOpen) {
     return null;
   }
 
-  const handleLookupAdd = () => {
+  const handleAddPatient = async () => {
     setError("");
 
     if (!EMAIL_REGEX.test(email.trim())) {
-      setError("Please enter a valid patient email for lookup.");
+      setError("Please enter a valid patient email.");
       return;
     }
-
-    if (!lookupResult) {
-      setError(
-        "No registered patient account found. Create a temporary account below.",
-      );
-      return;
-    }
-
-    if (lookupResult.accountType !== "patient") {
-      setError("This account is not a patient account.");
-      return;
-    }
-
-    onAddPatient(lookupResult);
-    onClose();
-  };
-
-  const handleTemporaryCreate = () => {
-    setError("");
 
     if (!fullName.trim()) {
-      setError(
-        "Please enter the patient full name for temporary registration.",
-      );
+      setError("Please enter the patient full name.");
       return;
     }
 
-    if (!EMAIL_REGEX.test(email.trim())) {
+    try {
+      await onAddPatient({
+        fullName: fullName.trim(),
+        email: email.trim(),
+        temporary,
+        createdByLoginId: currentSession?.loginId ?? "staff:guest@kinovo.local",
+      });
+      onClose();
+    } catch (caughtError) {
       setError(
-        "Please enter a valid patient email for temporary registration.",
+        caughtError?.message ||
+          "Unable to add patient right now. Please try again.",
       );
-      return;
     }
-
-    const temporaryAccount = createTemporaryPatientAccount({
-      fullName: fullName.trim(),
-      email: email.trim(),
-      createdByLoginId: currentSession.loginId,
-    });
-
-    onAddPatient(temporaryAccount);
-    onClose();
   };
 
   return (
@@ -93,10 +59,11 @@ function AddPatientModal({ isOpen, onClose, onAddPatient, currentSession }) {
 
         <div className="dashboard-modal__content">
           <p className="inline-note">
-            After adding a patient, connect a wearable to begin active tracking.
+            After adding a patient, you can connect a wearable now or skip and
+            pair later.
           </p>
 
-          <label htmlFor="lookup-email">Patient Email (lookup)</label>
+          <label htmlFor="lookup-email">Patient Email</label>
           <input
             id="lookup-email"
             type="email"
@@ -106,74 +73,49 @@ function AddPatientModal({ isOpen, onClose, onAddPatient, currentSession }) {
           />
 
           <fieldset className="inline-choice-group">
-            <legend>Is this patient already registered?</legend>
+            <legend>Account status</legend>
             <label>
               <input
                 type="radio"
                 name="registration-type"
-                value="registered"
-                checked={registrationType === "registered"}
-                onChange={(event) => setRegistrationType(event.target.value)}
+                checked={temporary}
+                onChange={() => setTemporary(true)}
               />
-              Yes, registered
+              Temporary intake account
             </label>
             <label>
               <input
                 type="radio"
                 name="registration-type"
-                value="unregistered"
-                checked={registrationType === "unregistered"}
-                onChange={(event) => setRegistrationType(event.target.value)}
+                checked={!temporary}
+                onChange={() => setTemporary(false)}
               />
-              No, not registered
+              Registered account
             </label>
           </fieldset>
 
-          {registrationType === "registered" ? (
-            <>
-              {lookupResult ? (
-                <p className="inline-note">
-                  Registered patient found:{" "}
-                  <strong>{lookupResult.fullName}</strong>
-                </p>
-              ) : (
-                <p className="inline-note">
-                  No registered patient match found yet
-                </p>
-              )}
+          <label htmlFor="temp-name">Patient Full Name</label>
+          <input
+            id="temp-name"
+            type="text"
+            placeholder="Full name"
+            value={fullName}
+            onChange={(event) => setFullName(event.target.value)}
+          />
 
-              <button
-                type="button"
-                className="primary-action"
-                onClick={handleLookupAdd}
-              >
-                Add Registered Patient
-              </button>
-            </>
-          ) : (
-            <>
-              <label htmlFor="temp-name">Patient Full Name</label>
-              <input
-                id="temp-name"
-                type="text"
-                placeholder="Full name"
-                value={fullName}
-                onChange={(event) => setFullName(event.target.value)}
-              />
+          <button
+            type="button"
+            className="primary-action"
+            onClick={handleAddPatient}
+          >
+            Add Patient
+          </button>
 
-              <button
-                type="button"
-                className="secondary-action"
-                onClick={handleTemporaryCreate}
-              >
-                Create Temporary Patient Account
-              </button>
-
-              <p className="inline-note">
-                Temporary accounts are marked for follow-up signup completion
-              </p>
-            </>
-          )}
+          <p className="inline-note">
+            {temporary
+              ? "Temporary accounts are marked for follow-up signup completion"
+              : "Registered patients are added directly to active monitoring"}
+          </p>
 
           {error ? <p className="auth-error">{error}</p> : null}
         </div>

@@ -66,6 +66,10 @@ ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=480
 ```
 
+BLE wearable identity is schema-driven. Each registered wearable uses
+`wearable_devices.device_id` as the BLE worker identity and ingestion key.
+No single HM10 address environment variable is required.
+
 > Use `127.0.0.1` instead of `localhost` — asyncpg on Windows can fail to resolve the `localhost` hostname.
 
 ---

@@ -1,35 +1,93 @@
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { APP_ROUTES } from "../constants/routes";
+import { loadCriticalMomentsSnapshot } from "../services/dashboardApi";
 
 function IntakePairingPage() {
+  const [moments, setMoments] = useState([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const hydrate = async () => {
+      const snapshot = await loadCriticalMomentsSnapshot();
+      if (!cancelled) {
+        setMoments(snapshot?.moments ?? []);
+      }
+    };
+
+    hydrate();
+    const intervalId = window.setInterval(hydrate, 2000);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(intervalId);
+    };
+  }, []);
+
+  const topMoments = useMemo(() => moments.slice(0, 50), [moments]);
+
   return (
     <main className="portal-page-shell" aria-live="polite">
       <section className="portal-page-panel">
-        <h1>Patient Intake</h1>
+        <h1>Patient History</h1>
         <p className="portal-page-note">
-          This page is for step-by-step intake workflow. The goal is to complete
-          intake in 3 steps:
+          Critical-moment history for staff triage review. Entries are sorted
+          newest first and include surrounding vitals context.
         </p>
 
-        <ol className="portal-page-steps">
-          <li>
-            <strong>Pair Device</strong> — choose a wearable and verify active
-            reads.
-          </li>
-          <li>
-            <strong>Assign Patient</strong> — link the wearable to a registered
-            or temporary patient.
-          </li>
-          <li>
-            <strong>Confirm Live Stream</strong> — verify battery and connection
-            state before monitoring.
-          </li>
-        </ol>
+        <div
+          className="history-grid"
+          role="table"
+          aria-label="Critical moments history"
+        >
+          <div className="history-grid__header" role="row">
+            <span>Time</span>
+            <span>Patient</span>
+            <span>Situation</span>
+            <span>Observed Vitals</span>
+            <span>Window</span>
+          </div>
+
+          {topMoments.length > 0 ? (
+            topMoments.map((moment) => (
+              <article
+                key={moment.eventId}
+                className="history-grid__row"
+                role="row"
+              >
+                <span>
+                  {moment.occurredAt
+                    ? new Date(moment.occurredAt).toLocaleString()
+                    : "Unknown"}
+                </span>
+                <span>
+                  <strong>{moment.patientName ?? "Unknown"}</strong>
+                  <br />
+                  <small>{moment.patientId ?? "N/A"}</small>
+                </span>
+                <span>{moment.reason ?? "critical_event"}</span>
+                <span>
+                  SpO₂ {moment.observedValue?.bloodOxygen ?? "--"}% · BPM{" "}
+                  {moment.observedValue?.heartBeat ?? "--"} · Stress{" "}
+                  {moment.observedValue?.stress ?? "--"}
+                </span>
+                <span>
+                  {moment.beforeSeconds ?? 3}s before /{" "}
+                  {moment.afterSeconds ?? 3}s after
+                </span>
+              </article>
+            ))
+          ) : (
+            <p className="portal-page-note">
+              No critical moments captured yet.
+            </p>
+          )}
+        </div>
 
         <p className="portal-page-note">
-          In this v1, intake actions still happen inside the Live Queue view.
-          This page defines the workflow purpose and will host the full wizard
-          next.
+          Intake + pairing still happen in Live Queue. This page is now focused
+          on reviewing critical episodes and associated vitals windows.
         </p>
 
         <div className="portal-page-actions">

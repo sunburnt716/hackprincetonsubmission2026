@@ -16,9 +16,13 @@ function PatientCard({ patient, isSelected, onSelect, onRelease }) {
         : "→";
 
   const velocityText = `${trendArrow} ${trendLabel} ${Math.abs(uiState.signedBpmDelta ?? 0)} bpm`;
+  const spo2 = clinicalPayload?.vitals?.bloodOxygen;
+  const heartBeat = clinicalPayload?.vitals?.heartBeat;
+  const stress = clinicalPayload?.vitals?.stress;
 
-  const connectionLabel =
-    patient.transportMeta.connectionStatus === "connected"
+  const connectionLabel = uiState.stale
+    ? "Stale"
+    : patient.transportMeta.connectionStatus === "connected"
       ? "Connected"
       : patient.transportMeta.connectionStatus === "pending_reads"
         ? "Pending reads"
@@ -45,6 +49,7 @@ function PatientCard({ patient, isSelected, onSelect, onRelease }) {
   return (
     <article
       className={`triage-row ${uiState.isCritical ? "triage-row--critical" : ""} ${isSelected ? "triage-row--selected" : ""}`.trim()}
+      style={{ opacity: uiState.stale ? 0.62 : 1 }}
       aria-label={`Open details for ${patientName}`}
       role="button"
       tabIndex={0}
@@ -58,17 +63,17 @@ function PatientCard({ patient, isSelected, onSelect, onRelease }) {
 
       <div className="triage-row__cell triage-row__cell--vital">
         <span className="triage-row__label">SpO₂</span>
-        <strong>{clinicalPayload.vitals.bloodOxygen}%</strong>
+        <strong>{typeof spo2 === "number" ? `${spo2}%` : "--"}</strong>
       </div>
 
       <div className="triage-row__cell triage-row__cell--vital">
         <span className="triage-row__label">BPM</span>
-        <strong>{clinicalPayload.vitals.heartBeat}</strong>
+        <strong>{typeof heartBeat === "number" ? heartBeat : "--"}</strong>
       </div>
 
       <div className="triage-row__cell triage-row__cell--vital">
         <span className="triage-row__label">Stress</span>
-        <strong>{clinicalPayload.vitals.stress}</strong>
+        <strong>{typeof stress === "number" ? stress : "--"}</strong>
       </div>
 
       <div className="triage-row__cell">

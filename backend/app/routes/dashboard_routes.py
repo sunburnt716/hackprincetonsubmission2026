@@ -1,125 +1,121 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from fastapi import APIRouter, HTTPException, status
 
-from fastapi import APIRouter, Depends
-from sqlalchemy import and_, func, select
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from app.database import get_db
-from app.models.user import Patient
-from app.models.vitals import VitalsRecord
-from app.models.wearable import WearableDevice
+from app.dashboard_store import (
+    add_patient,
+    bind_wearable,
+    get_device_health_snapshot as load_device_health_snapshot,
+    get_critical_moments_history,
+    get_pairing_status,
+    get_patient_detail,
+    get_waiting_room_snapshot as load_waiting_room_snapshot,
+    list_available_wearables,
+    release_patient,
+    run_wearable_precheck,
+    unbind_wearable,
+)
+from app.schemas.dashboard import (
+    AddPatientRequest,
+    BindWearableRequest,
+    GenericDashboardAction,
+    PairingStatusResponse,
+    PatientDetailResponse,
+    WearablePrecheckRequest,
+    WearablePrecheckResponse,
+)
 
 router = APIRouter(prefix="/api/v1/dashboard", tags=["dashboard"])
 
 
 @router.get("/waiting-room")
-async def get_waiting_room_snapshot(db: AsyncSession = Depends(get_db)):
-    latest_vitals_subquery = (
-        select(
-            VitalsRecord.patient_id.label("patient_id"),
-            func.max(VitalsRecord.timestamp).label("latest_timestamp"),
-        )
-        .group_by(VitalsRecord.patient_id)
-        .subquery()
+async def get_waiting_room_snapshot():
+    return load_waiting_room_snapshot()
+
+
+@router.post("/waiting-room/add-patient")
+async def post_add_patient(payload: AddPatientRequest):
+    patient = add_patient(
+        full_name=payload.full_name,
+        email=payload.email,
+        temporary=payload.temporary,
+        created_by_login_id=payload.created_by_login_id,
     )
+    return {"ok": True, "message": "Patient added to waiting room.", "patient": patient}
 
-    statement = (
-        select(Patient, WearableDevice, VitalsRecord)
-        .outerjoin(WearableDevice, WearableDevice.patient_id == Patient.id)
-        .outerjoin(
-            latest_vitals_subquery,
-            latest_vitals_subquery.c.patient_id == Patient.id,
-        )
-        .outerjoin(
-            VitalsRecord,
-            and_(
-                VitalsRecord.patient_id == Patient.id,
-                VitalsRecord.timestamp == latest_vitals_subquery.c.latest_timestamp,
-            ),
-        )
-        .order_by(Patient.wait_started_at.asc())
-    )
 
-    rows = (await db.execute(statement)).all()
-    now_utc = datetime.now(timezone.utc)
+@router.get("/patient/{patient_id}", response_model=PatientDetailResponse)
+async def get_waiting_room_patient_detail(patient_id: str):
+    try:
+        return get_patient_detail(patient_id=patient_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
 
-    patients_payload: list[dict] = []
-    for patient, wearable, vitals in rows:
-        vitals_timestamp = vitals.timestamp if vitals else patient.wait_started_at
-        connection_status = "unpaired"
 
-        if wearable and wearable.patient_id and wearable.is_active:
-            connection_status = "connected"
-        elif wearable and wearable.patient_id and not wearable.is_active:
-            connection_status = "disconnected"
-
-        patients_payload.append(
-            {
-                "id": str(patient.id),
-                "full_name": patient.full_name,
-                "email": patient.email,
-                "temporary": patient.temporary,
-                "status": patient.status.value,
-                "wait_started_at": patient.wait_started_at,
-                "latest_vitals": {
-                    "timestamp": vitals_timestamp,
-                    "blood_oxygen": vitals.blood_oxygen if vitals else 0,
-                    "heart_beat": vitals.heart_beat if vitals else 0,
-                    "stress": float(vitals.stress) if vitals and vitals.stress is not None else None,
-                },
-                "wearable": {
-                    "device_id": wearable.device_id if wearable else "unassigned",
-                    "battery_level": wearable.battery_level if wearable else None,
-                    "signal_strength": wearable.signal_strength if wearable else None,
-                    "last_sync_time": wearable.last_sync_time if wearable else None,
-                    "paired_at": wearable.created_at if wearable else None,
-                    "is_active": wearable.is_active if wearable else False,
-                    "connection_status": connection_status,
-                },
-            }
-        )
-
+@router.get("/devices/available")
+async def get_available_wearables():
+    snapshot = load_waiting_room_snapshot()
     return {
         "schema_version": 1,
-        "updated_at": now_utc,
-        "patients": patients_payload,
+        "updated_at": snapshot.get("updated_at"),
+        "devices": list_available_wearables(),
     }
+
+
+@router.post("/devices/{device_id}/precheck", response_model=WearablePrecheckResponse)
+async def post_wearable_precheck(device_id: str, payload: WearablePrecheckRequest):
+    result = run_wearable_precheck(device_id=device_id, patient_id=payload.patient_id)
+    if result is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Wearable not found.",
+        )
+    return result
+
+
+@router.post("/waiting-room/{patient_id}/bind-device")
+async def post_bind_wearable(patient_id: str, payload: BindWearableRequest):
+    try:
+        patient = bind_wearable(patient_id=patient_id, device_id=payload.device_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+
+    return {"ok": True, "message": "Wearable bound to patient.", "patient": patient}
+
+
+@router.post("/waiting-room/{patient_id}/unbind-device", response_model=GenericDashboardAction)
+async def post_unbind_wearable(patient_id: str):
+    try:
+        unbind_wearable(patient_id=patient_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+
+    return GenericDashboardAction(ok=True, message="Wearable unbound from patient.")
+
+
+@router.get("/waiting-room/{patient_id}/pairing-status", response_model=PairingStatusResponse)
+async def get_patient_pairing_status(patient_id: str):
+    try:
+        return get_pairing_status(patient_id=patient_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+
+
+@router.post("/waiting-room/{patient_id}/release", response_model=GenericDashboardAction)
+async def post_release_patient(patient_id: str):
+    try:
+        release_patient(patient_id=patient_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+
+    return GenericDashboardAction(ok=True, message="Patient released and wearable disconnected.")
 
 
 @router.get("/device-health")
-async def get_device_health_snapshot(db: AsyncSession = Depends(get_db)):
-    statement = (
-        select(WearableDevice, Patient)
-        .outerjoin(Patient, WearableDevice.patient_id == Patient.id)
-        .order_by(WearableDevice.device_id.asc())
-    )
-    rows = (await db.execute(statement)).all()
+async def get_device_health_snapshot():
+    return load_device_health_snapshot()
 
-    devices_payload: list[dict] = []
-    for wearable, patient in rows:
-        connection_status = "unpaired"
-        if wearable.patient_id and wearable.is_active:
-            connection_status = "connected"
-        elif wearable.patient_id and not wearable.is_active:
-            connection_status = "disconnected"
 
-        devices_payload.append(
-            {
-                "device_id": wearable.device_id,
-                "patient_id": str(wearable.patient_id) if wearable.patient_id else None,
-                "patient_name": patient.full_name if patient else None,
-                "battery_level": wearable.battery_level,
-                "signal_strength": wearable.signal_strength,
-                "last_sync_time": wearable.last_sync_time,
-                "is_active": wearable.is_active,
-                "connection_status": connection_status,
-            }
-        )
-
-    return {
-        "schema_version": 1,
-        "updated_at": datetime.now(timezone.utc),
-        "devices": devices_payload,
-    }
+@router.get("/history/critical-moments")
+async def get_critical_moments_snapshot():
+    return get_critical_moments_history()

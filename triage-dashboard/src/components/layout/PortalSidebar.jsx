@@ -11,7 +11,7 @@ const NAV_ITEMS = [
   },
   {
     id: "intakePairing",
-    label: "Patient Intake",
+    label: "Patient History",
     icon: "▣",
     route: APP_ROUTES.PORTAL_INTAKE,
     visibleTo: ["staff", "admin"],

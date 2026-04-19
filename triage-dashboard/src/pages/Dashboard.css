@@ -3,6 +3,7 @@
   padding: 20px;
   box-sizing: border-box;
   display: grid;
+  align-content: start;
   gap: 16px;
   width: 100%;
 }

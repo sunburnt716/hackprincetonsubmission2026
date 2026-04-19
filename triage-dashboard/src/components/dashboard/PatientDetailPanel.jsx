@@ -2,7 +2,7 @@ import LiveWaveformCanvas from "./charts/LiveWaveformCanvas";
 import { useVitals } from "../../providers/useVitals";
 
 function PatientDetailPanel({ patient, onClose, onRelease, inline = false }) {
-  const { getWaveformSeries } = useVitals();
+  const { getWaveformSeries, getPipelineState } = useVitals();
 
   if (!patient) {
     return (
@@ -16,6 +16,14 @@ function PatientDetailPanel({ patient, onClose, onRelease, inline = false }) {
   }
 
   const waveformSamples = getWaveformSeries(patient.patientId);
+  const pipelineState = getPipelineState(patient.patientId);
+  const isStale = pipelineState?.status?.state === "stale";
+  const hasActiveConnection =
+    patient?.transportMeta?.connectionStatus === "connected" &&
+    patient?.transportMeta?.activeReadsHealthy;
+  const spo2 = patient?.clinicalPayload?.vitals?.bloodOxygen;
+  const heartBeat = patient?.clinicalPayload?.vitals?.heartBeat;
+  const stress = patient?.clinicalPayload?.vitals?.stress;
 
   return (
     <aside
@@ -50,15 +58,17 @@ function PatientDetailPanel({ patient, onClose, onRelease, inline = false }) {
           </p>
           <p>
             <strong>Heart Rate</strong>
-            <span>{patient.clinicalPayload.vitals.heartBeat} bpm</span>
+            <span>
+              {typeof heartBeat === "number" ? `${heartBeat} bpm` : "--"}
+            </span>
           </p>
           <p>
             <strong>SpO₂</strong>
-            <span>{patient.clinicalPayload.vitals.bloodOxygen}%</span>
+            <span>{typeof spo2 === "number" ? `${spo2}%` : "--"}</span>
           </p>
           <p>
             <strong>Stress</strong>
-            <span>{patient.clinicalPayload.vitals.stress}</span>
+            <span>{typeof stress === "number" ? stress : "--"}</span>
           </p>
           <p>
             <strong>Monitoring</strong>
@@ -66,7 +76,23 @@ function PatientDetailPanel({ patient, onClose, onRelease, inline = false }) {
           </p>
         </div>
 
-        <LiveWaveformCanvas samples={waveformSamples} />
+        {hasActiveConnection ? (
+          <>
+            <LiveWaveformCanvas samples={waveformSamples} isStale={isStale} />
+
+            {isStale ? (
+              <p className="inline-note">
+                Waveform is stale. Check connection before relying on live
+                updates.
+              </p>
+            ) : null}
+          </>
+        ) : (
+          <p className="inline-note">
+            No active wearable connection for this patient. Live visualization
+            is hidden until a device is connected and sending reads.
+          </p>
+        )}
 
         <button
           type="button"

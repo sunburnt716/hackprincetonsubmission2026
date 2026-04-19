@@ -1,6 +1,6 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { APP_ROUTES } from "../constants/routes";
-import { hasActiveSession } from "../services/authService.mock";
+import { hasActiveSession } from "../services/authService";
 
 function RequireAuth({ children }) {
   const location = useLocation();

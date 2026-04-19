@@ -1,4 +1,4 @@
-export const MOCK_API_ROUTES = {
+export const API_ROUTES = {
   PATIENT_SIGNUP: "/api/v1/auth/patient/sign-up",
   PATIENT_LOGIN: "/api/v1/auth/patient/log-in",
   STAFF_SIGNUP: "/api/v1/auth/staff/sign-up",
@@ -18,7 +18,10 @@ export const MOCK_API_ROUTES = {
     "/api/v1/dashboard/waiting-room/:patientId/bind-device",
   DASHBOARD_UNBIND_WEARABLE:
     "/api/v1/dashboard/waiting-room/:patientId/unbind-device",
+  DASHBOARD_RELEASE_PATIENT:
+    "/api/v1/dashboard/waiting-room/:patientId/release",
   DASHBOARD_PAIRING_STATUS:
     "/api/v1/dashboard/waiting-room/:patientId/pairing-status",
+  DASHBOARD_CRITICAL_MOMENTS: "/api/v1/dashboard/history/critical-moments",
   DASHBOARD_SETTINGS: "/api/v1/settings",
 };
