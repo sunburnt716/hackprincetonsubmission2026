@@ -112,9 +112,7 @@ function Signup() {
           ? submitError.message
           : "Unable to complete Sign-up right now.";
 
-      setError(
-        `Sign-up failed before redirect. ${message} Confirm the backend is running at http://127.0.0.1:8000.`,
-      );
+      setError(`Sign-up failed before redirect. ${message}`);
     }
   };
 
