@@ -3,9 +3,9 @@ import { APP_ROUTES } from "../../constants/routes";
 
 function LandingFooter() {
   return (
-    <footer className="border-t border-ink-100 bg-white">
+    <footer className="border-t border-ink-100 bg-white dark:border-ink-700 dark:bg-[#0c0d14]">
       <div className="mx-auto flex max-w-[1200px] flex-col gap-6 px-6 py-10 sm:flex-row sm:items-center sm:justify-between lg:px-10">
-        <div className="flex items-center gap-2 text-[13px] text-ink-400">
+        <div className="flex items-center gap-2 text-[13px] text-ink-400 dark:text-ink-300">
           <span
             aria-hidden
             className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-brand-500 to-brand-700 text-white"
@@ -22,14 +22,14 @@ function LandingFooter() {
           </span>
           <span>
             © {new Date().getFullYear()}{" "}
-            <span className="wordmark text-ink-700 text-[13px]">Kinova</span>{" "}
+            <span className="wordmark text-ink-700 text-[13px] dark:text-ink-100">Kinova</span>{" "}
             Health · HackPrinceton
           </span>
         </div>
-        <div className="flex flex-wrap items-center gap-5 text-[13px] text-ink-500">
-          <a href="#dashboard" className="hover:text-ink-800">Platform</a>
-          <a href="#device" className="hover:text-ink-800">Device</a>
-          <Link to={APP_ROUTES.LOGIN} className="hover:text-ink-800">
+        <div className="flex flex-wrap items-center gap-5 text-[13px] text-ink-500 dark:text-ink-300">
+          <a href="#dashboard" className="hover:text-ink-800 dark:hover:text-ink-50">Platform</a>
+          <a href="#device" className="hover:text-ink-800 dark:hover:text-ink-50">Device</a>
+          <Link to={APP_ROUTES.LOGIN} className="hover:text-ink-800 dark:hover:text-ink-50">
             Hospital Login
           </Link>
         </div>

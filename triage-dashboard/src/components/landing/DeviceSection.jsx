@@ -191,7 +191,7 @@ function DeviceSection() {
   return (
     <section
       id="device"
-      className="relative scroll-mt-20 overflow-hidden border-t border-ink-100 bg-gradient-to-b from-ink-900 via-ink-800 to-ink-900 py-20 text-white lg:py-28"
+      className="relative scroll-mt-20 overflow-hidden border-t border-ink-100 bg-gradient-to-b from-ink-900 via-ink-800 to-ink-900 py-20 text-white lg:py-28 dark:border-ink-700"
     >
       <div
         aria-hidden

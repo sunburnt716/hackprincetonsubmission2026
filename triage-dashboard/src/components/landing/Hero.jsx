@@ -21,7 +21,7 @@ function Hero() {
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-ink-100 to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-ink-100 to-transparent dark:via-ink-700"
       />
 
       <div className="relative mx-auto max-w-[1200px] px-6 pb-12 pt-14 lg:px-10 lg:pb-14 lg:pt-16">
@@ -31,7 +31,7 @@ function Hero() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 rounded-full border border-ink-100 bg-white/70 px-3 py-1 text-[11.5px] font-medium text-ink-500 backdrop-blur"
+              className="inline-flex items-center gap-2 rounded-full border border-ink-100 bg-white/70 px-3 py-1 text-[11.5px] font-medium text-ink-500 backdrop-blur dark:border-ink-700 dark:bg-ink-800/60 dark:text-ink-300"
             >
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[color:var(--color-signal-stable)]">
                 <span
@@ -46,10 +46,10 @@ function Hero() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.05, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-3 text-[42px] font-medium leading-[1.04] tracking-[-0.035em] text-black sm:text-[54px] lg:text-[62px]"
+              className="mt-3 text-[42px] font-medium leading-[1.04] tracking-[-0.035em] text-black sm:text-[54px] lg:text-[62px] dark:text-white"
             >
               Triage that{" "}
-              <span className="font-serif italic font-normal text-brand-700">
+              <span className="font-serif italic font-normal text-brand-700 dark:text-brand-300">
                 moves
               </span>{" "}
               <br className="hidden sm:block" />
@@ -60,7 +60,7 @@ function Hero() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15, duration: 0.7 }}
-              className="mt-7 max-w-[520px] text-[16.5px] leading-[1.65] text-ink-500 lg:text-[17.5px]"
+              className="mt-7 max-w-[520px] text-[16.5px] leading-[1.65] text-ink-500 lg:text-[17.5px] dark:text-ink-300"
             >
               Kinova streams vitals from a wearable directly into your ED, re-ranks
               the queue the instant a patient deteriorates, and hands clinicians a
@@ -76,7 +76,7 @@ function Hero() {
             >
               <Link
                 to={APP_ROUTES.LOGIN}
-                className="group inline-flex items-center gap-2 rounded-full bg-ink-800 px-5 py-3 text-[14px] font-medium text-white shadow-[0_14px_28px_-12px_rgba(8,9,26,0.55)] transition-all hover:-translate-y-0.5 hover:bg-ink-900 hover:shadow-[0_18px_36px_-14px_rgba(8,9,26,0.7)]"
+                className="group inline-flex items-center gap-2 rounded-full bg-ink-800 px-5 py-3 text-[14px] font-medium text-white shadow-[0_14px_28px_-12px_rgba(8,9,26,0.55)] transition-all hover:-translate-y-0.5 hover:bg-ink-900 hover:shadow-[0_18px_36px_-14px_rgba(8,9,26,0.7)] dark:bg-white dark:text-ink-900 dark:shadow-[0_14px_28px_-12px_rgba(0,0,0,0.75)] dark:hover:bg-ink-100 dark:hover:shadow-[0_18px_36px_-14px_rgba(0,0,0,0.8)]"
               >
                 Hospital Login
                 <svg
@@ -95,7 +95,7 @@ function Hero() {
                   />
                 </svg>
               </Link>
-              <span className="text-[12.5px] text-ink-400">
+              <span className="text-[12.5px] text-ink-400 dark:text-ink-300">
                 HIPAA-aligned · on-prem option
               </span>
             </motion.div>

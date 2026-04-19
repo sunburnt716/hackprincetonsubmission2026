@@ -31,7 +31,7 @@ const velocityFor = (ui) => {
 const VELOCITY_TONE = {
   rising: "text-[color:var(--color-signal-critical)]",
   falling: "text-[color:var(--color-signal-stable)]",
-  steady: "text-ink-400",
+  steady: "text-ink-400 dark:text-ink-300",
 };
 
 const CONNECTION_TONE = {
@@ -41,7 +41,7 @@ const CONNECTION_TONE = {
     "text-[color:var(--color-signal-watch)] bg-[color:var(--color-signal-watch)]/10",
   disconnected:
     "text-[color:var(--color-signal-critical)] bg-[color:var(--color-signal-critical)]/10",
-  unpaired: "text-ink-400 bg-ink-100/60",
+  unpaired: "text-ink-400 bg-ink-100/60 dark:text-ink-300 dark:bg-ink-700/40",
 };
 
 const FEATURES = [
@@ -104,8 +104,8 @@ function PatientRow({ patient, highlight }) {
       transition={{ type: "spring", stiffness: 260, damping: 28 }}
       className={`relative flex items-center gap-3 rounded-xl border px-3.5 py-3 ${
         uiState.isCritical
-          ? "border-[color:var(--color-signal-critical)]/25 bg-[color:var(--color-signal-critical)]/5"
-          : "border-ink-100 bg-white"
+          ? "border-[color:var(--color-signal-critical)]/25 bg-[color:var(--color-signal-critical)]/5 dark:bg-[color:var(--color-signal-critical)]/10"
+          : "border-ink-100 bg-white dark:border-ink-700 dark:bg-ink-800/60"
       }`}
     >
       {uiState.isCritical ? (
@@ -131,37 +131,37 @@ function PatientRow({ patient, highlight }) {
       />
 
       <div className="flex min-w-0 flex-1 items-baseline gap-2">
-        <span className="truncate text-[13px] font-semibold text-ink-800">
+        <span className="truncate text-[13px] font-semibold text-ink-800 dark:text-ink-50">
           {patientName}
         </span>
-        <span className="shrink-0 font-mono text-[10.5px] text-ink-400">
+        <span className="shrink-0 font-mono text-[10.5px] text-ink-400 dark:text-ink-300">
           {patientId}
         </span>
       </div>
 
       <div className="hidden items-center gap-1.5 sm:flex">
-        <span className="text-[10px] font-medium uppercase tracking-[0.1em] text-ink-300">
+        <span className="text-[10px] font-medium uppercase tracking-[0.1em] text-ink-300 dark:text-ink-400">
           SpO₂
         </span>
-        <span className="font-mono text-[12.5px] font-semibold text-ink-700">
+        <span className="font-mono text-[12.5px] font-semibold text-ink-700 dark:text-ink-100">
           {clinicalPayload.vitals.bloodOxygen}%
         </span>
       </div>
 
       <div className="flex items-center gap-1.5">
-        <span className="text-[10px] font-medium uppercase tracking-[0.1em] text-ink-300">
+        <span className="text-[10px] font-medium uppercase tracking-[0.1em] text-ink-300 dark:text-ink-400">
           BPM
         </span>
-        <span className="font-mono text-[12.5px] font-semibold text-ink-700">
+        <span className="font-mono text-[12.5px] font-semibold text-ink-700 dark:text-ink-100">
           {clinicalPayload.vitals.heartBeat}
         </span>
       </div>
 
       <div className="hidden items-center gap-1.5 md:flex">
-        <span className="text-[10px] font-medium uppercase tracking-[0.1em] text-ink-300">
+        <span className="text-[10px] font-medium uppercase tracking-[0.1em] text-ink-300 dark:text-ink-400">
           Stress
         </span>
-        <span className="font-mono text-[12.5px] font-semibold text-ink-700">
+        <span className="font-mono text-[12.5px] font-semibold text-ink-700 dark:text-ink-100">
           {stress == null ? "—" : stress}
         </span>
       </div>
@@ -251,17 +251,17 @@ function DashboardMockup() {
         className="absolute -inset-10 rounded-[40px] bg-[radial-gradient(70%_60%_at_50%_0%,rgba(61,99,255,0.14),transparent_70%)] blur-2xl"
       />
       <div
-        className="relative overflow-hidden rounded-[22px] border border-ink-100 bg-gradient-to-b from-white to-ink-50/60 shadow-[0_50px_100px_-40px_rgba(15,16,32,0.35),0_16px_32px_-16px_rgba(15,16,32,0.15)]"
+        className="relative overflow-hidden rounded-[22px] border border-ink-100 bg-gradient-to-b from-white to-ink-50/60 shadow-[0_50px_100px_-40px_rgba(15,16,32,0.35),0_16px_32px_-16px_rgba(15,16,32,0.15)] dark:border-ink-700 dark:from-ink-800 dark:to-ink-900/80 dark:shadow-[0_50px_100px_-40px_rgba(0,0,0,0.75),0_16px_32px_-16px_rgba(0,0,0,0.5)]"
         style={{ animation: "landing-float 7s ease-in-out infinite" }}
       >
         {/* Window chrome */}
-        <div className="flex items-center justify-between border-b border-ink-100 bg-white/70 px-4 py-3 backdrop-blur-sm">
+        <div className="flex items-center justify-between border-b border-ink-100 bg-white/70 px-4 py-3 backdrop-blur-sm dark:border-ink-700 dark:bg-ink-900/60">
           <div className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-ink-100" />
-            <span className="h-2.5 w-2.5 rounded-full bg-ink-100" />
-            <span className="h-2.5 w-2.5 rounded-full bg-ink-100" />
+            <span className="h-2.5 w-2.5 rounded-full bg-ink-100 dark:bg-ink-700" />
+            <span className="h-2.5 w-2.5 rounded-full bg-ink-100 dark:bg-ink-700" />
+            <span className="h-2.5 w-2.5 rounded-full bg-ink-100 dark:bg-ink-700" />
           </div>
-          <div className="flex items-center gap-2 rounded-md bg-ink-50 px-3 py-1 text-[11px] font-mono text-ink-400">
+          <div className="flex items-center gap-2 rounded-md bg-ink-50 px-3 py-1 text-[11px] font-mono text-ink-400 dark:bg-ink-800 dark:text-ink-300">
             <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
               <path
                 d="M6 1.5v1M6 9.5v1M1.5 6h1M9.5 6h1M2.6 2.6l.7.7M8.7 8.7l.7.7M2.6 9.4l.7-.7M8.7 3.3l.7-.7"
@@ -279,7 +279,7 @@ function DashboardMockup() {
             </svg>
             kinova.health/portal/triage
           </div>
-          <span className="text-[11px] font-medium text-ink-400">
+          <span className="text-[11px] font-medium text-ink-400 dark:text-ink-300">
             ED West · Live
           </span>
         </div>
@@ -288,14 +288,14 @@ function DashboardMockup() {
         <div className="p-5 md:p-6">
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-400">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-400 dark:text-ink-300">
                 Active Queue
               </p>
-              <p className="text-[13px] font-medium text-ink-700">
+              <p className="text-[13px] font-medium text-ink-700 dark:text-ink-100">
                 Auto-sorted by clinical priority
               </p>
             </div>
-            <div className="flex items-center gap-2 rounded-full border border-ink-100 bg-white px-3 py-1 text-[11px] font-medium text-ink-500">
+            <div className="flex items-center gap-2 rounded-full border border-ink-100 bg-white px-3 py-1 text-[11px] font-medium text-ink-500 dark:border-ink-700 dark:bg-ink-800/70 dark:text-ink-200">
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[color:var(--color-signal-stable)]">
                 <span
                   className="absolute inset-0 rounded-full bg-[color:var(--color-signal-stable)]"
@@ -329,22 +329,22 @@ function DashboardSection() {
   return (
     <section
       id="dashboard"
-      className="relative scroll-mt-20 overflow-hidden border-t border-ink-100 bg-gradient-to-b from-ink-50/40 to-white py-20 lg:py-28"
+      className="relative scroll-mt-20 overflow-hidden border-t border-ink-100 bg-gradient-to-b from-ink-50/40 to-white py-20 lg:py-28 dark:border-ink-700 dark:from-ink-900 dark:to-[#0c0d14]"
     >
       <div className="mx-auto max-w-[1200px] px-6 lg:px-10">
         <div className="mx-auto max-w-[680px] text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-ink-100 bg-white px-3 py-1 text-[11.5px] font-medium text-ink-500">
+          <span className="inline-flex items-center gap-2 rounded-full border border-ink-100 bg-white px-3 py-1 text-[11.5px] font-medium text-ink-500 dark:border-ink-700 dark:bg-ink-800/60 dark:text-ink-200">
             <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
             The Dashboard
           </span>
-          <h2 className="mt-5 text-[32px] font-medium leading-[1.08] tracking-[-0.025em] text-black sm:text-[42px]">
+          <h2 className="mt-5 text-[32px] font-medium leading-[1.08] tracking-[-0.025em] text-black sm:text-[42px] dark:text-white">
             Patients{" "}
-            <span className="font-serif italic font-normal text-brand-700">
+            <span className="font-serif italic font-normal text-brand-700 dark:text-brand-300">
               re-prioritize
             </span>{" "}
             themselves.
           </h2>
-          <p className="mt-4 text-[15.5px] leading-[1.55] text-ink-500 sm:text-[16.5px]">
+          <p className="mt-4 text-[15.5px] leading-[1.55] text-ink-500 sm:text-[16.5px] dark:text-ink-300">
             Every device reading flows into one queue. The sickest patient rises
             the moment their vitals say so — not when someone notices.
           </p>
@@ -358,17 +358,17 @@ function DashboardSection() {
           {FEATURES.map((f) => (
             <div
               key={f.title}
-              className="rounded-2xl border border-ink-100 bg-white p-5 transition-all hover:-translate-y-0.5 hover:border-ink-200 hover:shadow-[0_24px_40px_-28px_rgba(15,16,32,0.35)]"
+              className="rounded-2xl border border-ink-100 bg-white p-5 transition-all hover:-translate-y-0.5 hover:border-ink-200 hover:shadow-[0_24px_40px_-28px_rgba(15,16,32,0.35)] dark:border-ink-700 dark:bg-ink-800/50 dark:hover:border-ink-600 dark:hover:shadow-[0_24px_40px_-28px_rgba(0,0,0,0.7)]"
             >
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/20 dark:text-brand-200">
                 <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
                   {f.icon}
                 </svg>
               </span>
-              <h3 className="mt-3.5 text-[15px] font-semibold tracking-[-0.01em] text-ink-800">
+              <h3 className="mt-3.5 text-[15px] font-semibold tracking-[-0.01em] text-ink-800 dark:text-ink-50">
                 {f.title}
               </h3>
-              <p className="mt-1.5 text-[13.5px] leading-[1.55] text-ink-500">
+              <p className="mt-1.5 text-[13.5px] leading-[1.55] text-ink-500 dark:text-ink-300">
                 {f.body}
               </p>
             </div>

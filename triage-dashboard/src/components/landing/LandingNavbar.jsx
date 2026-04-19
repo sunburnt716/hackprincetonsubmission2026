@@ -42,7 +42,7 @@ function LandingNavbar() {
         className={[
           "absolute inset-0 transition-all duration-300",
           revealed
-            ? "backdrop-blur-xl bg-white/92 border-b border-ink-200/80 shadow-[0_6px_24px_-12px_rgba(15,16,32,0.18)]"
+            ? "backdrop-blur-xl bg-white/92 border-b border-ink-200/80 shadow-[0_6px_24px_-12px_rgba(15,16,32,0.18)] dark:bg-ink-900/85 dark:border-ink-700/70 dark:shadow-[0_6px_24px_-12px_rgba(0,0,0,0.6)]"
             : "pointer-events-none opacity-0",
         ].join(" ")}
       />
@@ -51,7 +51,7 @@ function LandingNavbar() {
         {/* Always-visible logo */}
         <Link
           to={APP_ROUTES.ROOT}
-          className="flex items-center gap-2.5 text-ink-800"
+          className="flex items-center gap-2.5 text-ink-800 dark:text-ink-50"
         >
           <span
             aria-hidden
@@ -86,7 +86,7 @@ function LandingNavbar() {
                 smoothScrollTo(link.href);
                 history.replaceState(null, "", link.href);
               }}
-              className="text-[13.5px] font-medium text-ink-500 transition-colors hover:text-ink-800"
+              className="text-[13.5px] font-medium text-ink-500 transition-colors hover:text-ink-800 dark:text-ink-300 dark:hover:text-ink-50"
             >
               {link.label}
             </a>
@@ -102,7 +102,7 @@ function LandingNavbar() {
         >
           <Link
             to={APP_ROUTES.LOGIN}
-            className="inline-flex items-center gap-1.5 rounded-full bg-ink-800 px-4 py-2 text-[13.5px] font-medium text-white shadow-[0_8px_20px_-8px_rgba(8,9,26,0.5)] transition-all hover:-translate-y-px hover:bg-ink-900"
+            className="inline-flex items-center gap-1.5 rounded-full bg-ink-800 px-4 py-2 text-[13.5px] font-medium text-white shadow-[0_8px_20px_-8px_rgba(8,9,26,0.5)] transition-all hover:-translate-y-px hover:bg-ink-900 dark:bg-white dark:text-ink-900 dark:shadow-[0_8px_20px_-8px_rgba(0,0,0,0.7)] dark:hover:bg-ink-100"
           >
             Hospital Login
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">

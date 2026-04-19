@@ -6,7 +6,7 @@ import LandingNavbar from "../components/landing/LandingNavbar";
 
 function LandingPage() {
   return (
-    <div className="landing-root min-h-screen bg-white text-ink-700 antialiased">
+    <div className="landing-root min-h-screen bg-white text-ink-700 antialiased dark:bg-[#0c0d14] dark:text-ink-100">
       <LandingNavbar />
       <main>
         <Hero />

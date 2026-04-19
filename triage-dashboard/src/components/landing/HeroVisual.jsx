@@ -35,7 +35,7 @@ const TONE_COLORS = {
     "text-[color:var(--color-signal-watch)] bg-[color:var(--color-signal-watch)]/10",
   stable:
     "text-[color:var(--color-signal-stable)] bg-[color:var(--color-signal-stable)]/10",
-  neutral: "text-ink-500 bg-ink-50",
+  neutral: "text-ink-500 bg-ink-50 dark:text-ink-200 dark:bg-ink-700/40",
 };
 
 const velocityChip = (ui) => {
@@ -48,7 +48,7 @@ const velocityChip = (ui) => {
 const VELOCITY_TONE = {
   rising: "text-[color:var(--color-signal-critical)]",
   falling: "text-[color:var(--color-signal-stable)]",
-  steady: "text-ink-400",
+  steady: "text-ink-400 dark:text-ink-300",
 };
 
 function HeroVisual() {
@@ -78,7 +78,7 @@ function HeroVisual() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className="relative overflow-hidden rounded-[28px] border border-ink-100 bg-gradient-to-b from-white to-ink-50 shadow-[0_40px_80px_-30px_rgba(15,16,32,0.35),0_12px_24px_-12px_rgba(15,16,32,0.15)]"
+        className="relative overflow-hidden rounded-[28px] border border-ink-100 bg-gradient-to-b from-white to-ink-50 shadow-[0_40px_80px_-30px_rgba(15,16,32,0.35),0_12px_24px_-12px_rgba(15,16,32,0.15)] dark:border-ink-700 dark:from-ink-800 dark:to-ink-900 dark:shadow-[0_40px_80px_-30px_rgba(0,0,0,0.7),0_12px_24px_-12px_rgba(0,0,0,0.5)]"
       >
         {/* Specular top highlight */}
         <div
@@ -87,7 +87,7 @@ function HeroVisual() {
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_60%_at_50%_-20%,rgba(255,255,255,0.9),transparent_45%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_60%_at_50%_-20%,rgba(255,255,255,0.9),transparent_45%)] dark:bg-[radial-gradient(120%_60%_at_50%_-20%,rgba(255,255,255,0.08),transparent_45%)]"
         />
 
         {/* Inner frame — live triage preview */}
@@ -102,15 +102,15 @@ function HeroVisual() {
                   }}
                 />
               </span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-400">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-400 dark:text-ink-300">
                 Live Triage · ED West
               </span>
             </div>
-            <span className="text-[11px] font-mono text-ink-300">14:28:04</span>
+            <span className="text-[11px] font-mono text-ink-300 dark:text-ink-400">14:28:04</span>
           </div>
 
           {/* Focus patient tile */}
-          <div className="relative overflow-hidden rounded-2xl border border-ink-100 bg-white p-4">
+          <div className="relative overflow-hidden rounded-2xl border border-ink-100 bg-white p-4 dark:border-ink-700 dark:bg-ink-900/80">
             {isFocusCritical ? (
               <div
                 aria-hidden
@@ -128,10 +128,10 @@ function HeroVisual() {
                 >
                   Priority · {isFocusCritical ? "Critical" : "Stable"}
                 </p>
-                <p className="mt-1 text-[15px] font-semibold text-ink-800">
+                <p className="mt-1 text-[15px] font-semibold text-ink-800 dark:text-ink-50">
                   {FOCUS.patientName}
                 </p>
-                <p className="font-mono text-[11.5px] text-ink-400">
+                <p className="font-mono text-[11.5px] text-ink-400 dark:text-ink-300">
                   {FOCUS.patientId}
                   {isFocusCritical ? ` · ${FOCUS.uiState.criticalReason}` : ""}
                 </p>
@@ -142,7 +142,7 @@ function HeroVisual() {
                     ? "bg-[color:var(--color-signal-critical)]/10 text-[color:var(--color-signal-critical)]"
                     : focusVelocity.tone === "falling"
                       ? "bg-[color:var(--color-signal-stable)]/10 text-[color:var(--color-signal-stable)]"
-                      : "bg-ink-50 text-ink-500"
+                      : "bg-ink-50 text-ink-500 dark:bg-ink-700/40 dark:text-ink-200"
                 }`}
                 title="Heartbeat velocity"
               >
@@ -184,7 +184,7 @@ function HeroVisual() {
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.4 + i * 0.08, duration: 0.5 }}
-                  className="flex items-center gap-3 rounded-xl border border-ink-100 bg-white/80 px-3 py-2.5"
+                  className="flex items-center gap-3 rounded-xl border border-ink-100 bg-white/80 px-3 py-2.5 dark:border-ink-700 dark:bg-ink-900/60"
                 >
                   <span
                     className={`h-2 w-2 shrink-0 rounded-full ${
@@ -194,14 +194,14 @@ function HeroVisual() {
                     }`}
                   />
                   <div className="flex flex-1 items-baseline gap-2 overflow-hidden">
-                    <span className="truncate text-[12.5px] font-semibold text-ink-700">
+                    <span className="truncate text-[12.5px] font-semibold text-ink-700 dark:text-ink-100">
                       {p.patientName}
                     </span>
-                    <span className="shrink-0 font-mono text-[10.5px] text-ink-400">
+                    <span className="shrink-0 font-mono text-[10.5px] text-ink-400 dark:text-ink-300">
                       {p.patientId}
                     </span>
                   </div>
-                  <span className="shrink-0 font-mono text-[12px] text-ink-500">
+                  <span className="shrink-0 font-mono text-[12px] text-ink-500 dark:text-ink-200">
                     {p.clinicalPayload.vitals.heartBeat} bpm
                   </span>
                   <span
@@ -221,11 +221,11 @@ function HeroVisual() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6, duration: 0.6 }}
-        className="absolute -right-3 top-10 hidden rounded-2xl border border-ink-100 bg-white/95 px-3 py-2 shadow-[0_16px_32px_-16px_rgba(15,16,32,0.35)] backdrop-blur-md lg:block"
+        className="absolute -right-3 top-10 hidden rounded-2xl border border-ink-100 bg-white/95 px-3 py-2 shadow-[0_16px_32px_-16px_rgba(15,16,32,0.35)] backdrop-blur-md lg:block dark:border-ink-700 dark:bg-ink-800/95 dark:shadow-[0_16px_32px_-16px_rgba(0,0,0,0.7)]"
         style={{ animation: "landing-float 5s ease-in-out infinite" }}
       >
         <div className="flex items-center gap-2">
-          <span className="inline-flex h-6 w-6 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
+          <span className="inline-flex h-6 w-6 items-center justify-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-500/20 dark:text-brand-200">
             <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
               <path
                 d="M2 6l3 3 5-6"
@@ -237,8 +237,8 @@ function HeroVisual() {
             </svg>
           </span>
           <div>
-            <p className="text-[11px] font-semibold text-ink-700">Re-triaged</p>
-            <p className="text-[10px] text-ink-400">HR spike · 42s ago</p>
+            <p className="text-[11px] font-semibold text-ink-700 dark:text-ink-100">Re-triaged</p>
+            <p className="text-[10px] text-ink-400 dark:text-ink-300">HR spike · 42s ago</p>
           </div>
         </div>
       </motion.div>
