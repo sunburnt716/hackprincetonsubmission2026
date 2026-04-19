@@ -59,7 +59,7 @@ function PortalSidebar({ identity }) {
   return (
     <aside className="portal-sidebar" aria-label="Portal navigation">
       <div className="portal-sidebar__header">
-        <p className="portal-sidebar__brand">Kinovo Portal</p>
+        <p className="portal-sidebar__brand">Kinova Portal</p>
         <p className="portal-sidebar__identity-name">{identity.displayName}</p>
         <p className="portal-sidebar__identity-role">Role: {normalizedRole}</p>
         {identity.facilityName ? (

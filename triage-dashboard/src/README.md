@@ -1,6 +1,6 @@
 # Frontend source architecture
 
-This folder is the application core for the Kinovo waiting room dashboard.
+This folder is the application core for the Kinova waiting room dashboard.
 
 ## Architectural intent
 

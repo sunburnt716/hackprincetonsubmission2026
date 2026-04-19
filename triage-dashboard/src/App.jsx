@@ -7,6 +7,7 @@ import DashboardPatientTemplate from "./pages/DashboardPatientTemplate";
 import DeviceHealthPage from "./pages/DeviceHealthPage";
 import ForgotPassword from "./pages/ForgotPassword";
 import IntakePairingPage from "./pages/IntakePairingPage";
+import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Signin";
 import Settings from "./pages/Settings";
 import Signup from "./pages/Signup";
@@ -49,11 +50,10 @@ function PortalOperationalShell() {
 function App() {
   return (
     <Routes>
+      {/* Landing page — uses its own navbar/layout */}
+      <Route path={APP_ROUTES.ROOT} element={<LandingPage />} />
+
       <Route element={<PublicShell />}>
-        <Route
-          path={APP_ROUTES.ROOT}
-          element={<Navigate to={APP_ROUTES.LOGIN} replace />}
-        />
         <Route path={APP_ROUTES.LOGIN} element={<Login />} />
         <Route path={APP_ROUTES.SIGNUP} element={<Signup />} />
         <Route path={APP_ROUTES.FORGOT_PASSWORD} element={<ForgotPassword />} />
