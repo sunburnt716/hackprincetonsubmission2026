@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-04-18T00:00:00.000Z",
+  "patients": [
+    {
+      "patientId": "pt_demo_001",
+      "patientName": "Mina Shah",
+      "patientEmail": "mina.shah@example.com",
+      "waitStartedAt": "2026-04-18T08:00:00.000Z",
+      "clinicalPayload": {
+        "name": "Mina Shah",
+        "timestamp": "2026-04-18T08:00:00.000Z",
+        "vitals": {
+          "bloodOxygen": 98,
+          "heartBeat": 74,
+          "stress": 28
+        }
+      },
+      "transportMeta": {
+        "deviceId": "wearable-demo-a",
+        "batteryLevel": 88,
+        "signalStrength": -56,
+        "lastSyncTime": "2026-04-18T08:00:00.000Z",
+        "pairedAt": "2026-04-18T08:00:00.000Z",
+        "lowBatteryThreshold": 10,
+        "activeReadsHealthy": true,
+        "connectionStatus": "connected"
+      },
+      "uiState": {
+        "isCritical": false,
+        "criticalReason": "Stable",
+        "bpmDelta": 0,
+        "signedBpmDelta": 0,
+        "heartBeatDirection": "steady",
+        "monitoringStatus": "Live reads active"
+      },
+      "ingestPlan": {
+        "startAt": "2026-04-18T08:00:00.000Z",
+        "seconds": 200,
+        "stepSeconds": 1,
+        "baseVitals": {
+          "bloodOxygen": 98,
+          "heartBeat": 74,
+          "stress": 28
+        },
+        "driftPerSecond": {
+          "bloodOxygen": -0.04,
+          "heartBeat": 0.12,
+          "stress": 0.18
+        },
+        "criticalEvents": [
+          {
+            "atSecond": 28,
+            "durationSeconds": 6,
+            "beforeSeconds": 3,
+            "afterSeconds": 3,
+            "reason": "low_spo2"
+          },
+          {
+            "atSecond": 74,
+            "durationSeconds": 6,
+            "beforeSeconds": 3,
+            "afterSeconds": 3,
+            "reason": "high_heart_rate"
+          }
+        ]
+      }
+    },
+    {
+      "patientId": "pt_demo_002",
+      "patientName": "Ravi Patel",
+      "patientEmail": "ravi.patel@example.com",
+      "waitStartedAt": "2026-04-18T08:01:00.000Z",
+      "clinicalPayload": {
+        "name": "Ravi Patel",
+        "timestamp": "2026-04-18T08:01:00.000Z",
+        "vitals": {
+          "bloodOxygen": 96,
+          "heartBeat": 81,
+          "stress": 32
+        }
+      },
+      "transportMeta": {
+        "deviceId": "wearable-demo-b",
+        "batteryLevel": 91,
+        "signalStrength": -60,
+        "lastSyncTime": "2026-04-18T08:01:00.000Z",
+        "pairedAt": "2026-04-18T08:01:00.000Z",
+        "lowBatteryThreshold": 10,
+        "activeReadsHealthy": true,
+        "connectionStatus": "connected"
+      },
+      "uiState": {
+        "isCritical": false,
+        "criticalReason": "Stable",
+        "bpmDelta": 0,
+        "signedBpmDelta": 0,
+        "heartBeatDirection": "steady",
+        "monitoringStatus": "Live reads active"
+      },
+      "ingestPlan": {
+        "startAt": "2026-04-18T08:01:00.000Z",
+        "seconds": 200,
+        "stepSeconds": 1,
+        "baseVitals": {
+          "bloodOxygen": 96,
+          "heartBeat": 81,
+          "stress": 32
+        },
+        "driftPerSecond": {
+          "bloodOxygen": -0.03,
+          "heartBeat": 0.16,
+          "stress": 0.14
+        },
+        "criticalEvents": [
+          {
+            "atSecond": 41,
+            "durationSeconds": 6,
+            "beforeSeconds": 3,
+            "afterSeconds": 3,
+            "reason": "oxygen_drop"
+          },
+          {
+            "atSecond": 68,
+            "durationSeconds": 6,
+            "beforeSeconds": 3,
+            "afterSeconds": 3,
+            "reason": "tachycardia"
+          }
+        ]
+      }
+    }
+  ]
+}

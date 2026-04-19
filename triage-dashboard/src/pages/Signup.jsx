@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ACCOUNT_TYPE_OPTIONS, ACCOUNT_TYPES } from "../constants/accountTypes";
 import { APP_ROUTES } from "../constants/routes";
-import { submitSignup } from "../services/authService.mock";
+import { submitSignup } from "../services/authService";
 import "./Auth.css";
 
 const INITIAL_STATE = {

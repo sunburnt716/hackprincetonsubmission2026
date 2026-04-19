@@ -4,7 +4,7 @@ import { APP_ROUTES } from "../constants/routes";
 import {
   confirmPasswordReset,
   requestPasswordReset,
-} from "../services/authService.mock";
+} from "../services/authService";
 import "./Auth.css";
 
 function ForgotPassword() {

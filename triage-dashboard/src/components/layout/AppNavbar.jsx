@@ -6,7 +6,7 @@ import {
   getCurrentSession,
   hasActiveSession,
   refreshCurrentSession,
-} from "../../services/authService.mock";
+} from "../../services/authService";
 import "./AppNavbar.css";
 
 function AppNavbar() {

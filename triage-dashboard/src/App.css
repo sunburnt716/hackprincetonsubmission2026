@@ -122,3 +122,35 @@
   gap: 8px;
   flex-wrap: wrap;
 }
+
+.history-grid {
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.history-grid__header,
+.history-grid__row {
+  display: grid;
+  grid-template-columns: 1.4fr 1.2fr 1fr 1.4fr 1fr;
+  gap: 8px;
+  padding: 10px 12px;
+  align-items: center;
+}
+
+.history-grid__header {
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.72rem;
+  color: var(--text);
+}
+
+.history-grid__row {
+  border-bottom: 1px solid var(--border);
+  font-size: 0.86rem;
+}
+
+.history-grid__row:last-child {
+  border-bottom: 0;
+}

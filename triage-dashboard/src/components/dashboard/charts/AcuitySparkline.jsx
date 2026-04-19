@@ -3,6 +3,20 @@ import { curveMonotoneX, line, scaleLinear } from "d3";
 const WIDTH = 320;
 const HEIGHT = 72;
 
+function buildAdaptiveDomain(series, fallbackDomain) {
+  if (!series.length) {
+    return fallbackDomain;
+  }
+
+  const values = series.map((point) => point.value);
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const span = Math.max(max - min, 1);
+  const padding = span * 0.2;
+
+  return [min - padding, max + padding];
+}
+
 function buildPath(series, yDomain) {
   if (!series.length) {
     return "";
@@ -24,8 +38,14 @@ function buildPath(series, yDomain) {
 }
 
 function AcuitySparkline({ bpmSeries, spo2Series }) {
-  const bpmPath = buildPath(bpmSeries, [40, 180]);
-  const spo2Path = buildPath(spo2Series, [80, 100]);
+  const bpmPath = buildPath(
+    bpmSeries,
+    buildAdaptiveDomain(bpmSeries, [40, 180]),
+  );
+  const spo2Path = buildPath(
+    spo2Series,
+    buildAdaptiveDomain(spo2Series, [80, 100]),
+  );
 
   return (
     <div className="acuity-sparkline">

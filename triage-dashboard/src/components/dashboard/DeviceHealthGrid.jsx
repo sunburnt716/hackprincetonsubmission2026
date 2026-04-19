@@ -1,17 +1,15 @@
-function DeviceHealthGrid({ patients, compact = false }) {
-  const connectionStatus = (transportMeta) => {
-    if (!transportMeta.deviceId) {
-      return "Unpaired";
+function DeviceHealthGrid({ devices = [], compact = false }) {
+  const labelForConnectionStatus = (status) => {
+    if (status === "connected") {
+      return "Connected";
     }
-
-    if (!transportMeta.activeReadsHealthy) {
-      return "Pending Active Reads";
+    if (status === "pending_reads") {
+      return "Pending Reads";
     }
-
-    const ageMs = transportMeta.lastSyncTime
-      ? Date.now() - new Date(transportMeta.lastSyncTime).getTime()
-      : Number.POSITIVE_INFINITY;
-    return ageMs <= 10000 ? "Connected" : "Disconnected";
+    if (status === "disconnected") {
+      return "Disconnected";
+    }
+    return "Unpaired";
   };
 
   return (
@@ -20,40 +18,45 @@ function DeviceHealthGrid({ patients, compact = false }) {
     >
       <h2>Device Health</h2>
       <div className="device-health__table">
-        {patients.map((patient) => (
-          <article key={patient.patientId} className="device-health__row">
-            <span className="device-health__patient">
-              {patient.patientName}
-            </span>
-            <span>{patient.transportMeta.deviceId ?? "Not assigned"}</span>
-            <span>
-              {typeof patient.transportMeta.batteryLevel === "number"
-                ? `${Math.round(patient.transportMeta.batteryLevel)}%`
-                : "N/A"}
-              {typeof patient.transportMeta.batteryLevel === "number" &&
-              patient.transportMeta.batteryLevel < 10 ? (
-                <strong className="status-text status-text--connection-disconnected">
-                  {" "}
-                  Critical
-                </strong>
-              ) : null}
-            </span>
-            <span
-              className={`status-text status-text--connection-${connectionStatus(
-                patient.transportMeta,
-              )
-                .toLowerCase()
-                .replace(/\s+/g, "-")}`}
-            >
-              {connectionStatus(patient.transportMeta)}
-            </span>
-            <span>
-              {patient.transportMeta.pairedAt
-                ? new Date(patient.transportMeta.pairedAt).toLocaleTimeString()
-                : "Not paired yet"}
-            </span>
-          </article>
-        ))}
+        {devices.map((device) => {
+          const batteryLevel =
+            typeof device.battery_level === "number"
+              ? Math.round(device.battery_level)
+              : null;
+          const connectionStatus = labelForConnectionStatus(
+            device.connection_status,
+          );
+
+          return (
+            <article key={device.device_id} className="device-health__row">
+              <span className="device-health__patient">
+                {device.patient_name ?? "Unassigned"}
+              </span>
+              <span>{device.device_id ?? "Unknown device"}</span>
+              <span>
+                {typeof batteryLevel === "number" ? `${batteryLevel}%` : "N/A"}
+                {typeof batteryLevel === "number" && batteryLevel < 10 ? (
+                  <strong className="status-text status-text--connection-disconnected">
+                    {" "}
+                    Critical
+                  </strong>
+                ) : null}
+              </span>
+              <span
+                className={`status-text status-text--connection-${connectionStatus
+                  .toLowerCase()
+                  .replace(/\s+/g, "-")}`}
+              >
+                {connectionStatus}
+              </span>
+              <span>
+                {device.last_sync_time
+                  ? new Date(device.last_sync_time).toLocaleTimeString()
+                  : "No sync yet"}
+              </span>
+            </article>
+          );
+        })}
       </div>
     </section>
   );

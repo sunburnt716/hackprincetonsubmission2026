@@ -4,8 +4,7 @@ import PairDeviceModal from "../components/dashboard/PairDeviceModal";
 import PatientCard from "../components/dashboard/PatientCard";
 import PatientDetailPanel from "../components/dashboard/PatientDetailPanel";
 import { useVitals } from "../providers/useVitals";
-import { getCurrentSession } from "../services/authService.mock";
-import VitalsProvider from "../providers/VitalsProvider";
+import { getCurrentSession } from "../services/authService";
 import "./Dashboard.css";
 
 function playAlertTone() {
@@ -75,22 +74,20 @@ function DashboardContent() {
     previousCriticalCountRef.current = criticalCount;
   }, [criticalCount, soundEnabled]);
 
-  const handleAddPatient = (account) => {
-    const newPatient = addPatientFromAccount(account);
-    if (!newPatient) {
-      return;
+  const handleAddPatient = async (account) => {
+    const newPatient = await addPatientFromAccount(account);
+    if (newPatient) {
+      setIsAddPatientOpen(false);
+      setPairingPatientId(newPatient.patientId);
     }
-
-    setIsAddPatientOpen(false);
-    setPairingPatientId(newPatient.patientId);
   };
 
-  const handleRunConnectionChecks = (wearableId) => {
+  const handleRunConnectionChecks = async (wearableId) => {
     if (!pairingPatientId) {
       return null;
     }
 
-    const result = runConnectionChecks(pairingPatientId, wearableId);
+    const result = await runConnectionChecks(pairingPatientId, wearableId);
     if (!result) {
       return null;
     }
@@ -116,12 +113,15 @@ function DashboardContent() {
     return result;
   };
 
-  const handleConnectWearable = (precheckResult) => {
+  const handleConnectWearable = async (precheckResult) => {
     if (!pairingPatientId) {
       return;
     }
 
-    const connected = connectPatientWearable(pairingPatientId, precheckResult);
+    const connected = await connectPatientWearable(
+      pairingPatientId,
+      precheckResult,
+    );
     if (!connected) {
       return;
     }
@@ -260,11 +260,7 @@ function DashboardContent() {
 }
 
 function Dashboard() {
-  return (
-    <VitalsProvider>
-      <DashboardContent />
-    </VitalsProvider>
-  );
+  return <DashboardContent />;
 }
 
 export default Dashboard;

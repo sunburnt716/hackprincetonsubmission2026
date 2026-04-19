@@ -5,7 +5,7 @@ import {
   clearCurrentSession,
   getCurrentSession,
   refreshCurrentSession,
-} from "../../services/authService.mock";
+} from "../../services/authService";
 import PortalSidebar from "./PortalSidebar";
 import PortalTrustStrip from "./PortalTrustStrip";
 import "./PortalShell.css";

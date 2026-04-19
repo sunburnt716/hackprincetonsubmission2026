@@ -7,7 +7,7 @@ import {
   clearCurrentSession,
   deleteCurrentAccount,
   getCurrentSession,
-} from "../services/authService.mock";
+} from "../services/authService";
 
 function Settings() {
   const { themeMode, resolvedTheme, setThemeMode, themeModes } = useTheme();
