@@ -18,7 +18,12 @@ const velocityFor = (ui) => {
     return { arrow: "↑", label: "Rising", mag: delta, tone: "rising" };
   }
   if (delta < 0) {
-    return { arrow: "↓", label: "Falling", mag: Math.abs(delta), tone: "falling" };
+    return {
+      arrow: "↓",
+      label: "Falling",
+      mag: Math.abs(delta),
+      tone: "falling",
+    };
   }
   return { arrow: "→", label: "Steady", mag: 0, tone: "steady" };
 };
@@ -30,9 +35,12 @@ const VELOCITY_TONE = {
 };
 
 const CONNECTION_TONE = {
-  connected: "text-[color:var(--color-signal-stable)] bg-[color:var(--color-signal-stable)]/10",
-  pending_reads: "text-[color:var(--color-signal-watch)] bg-[color:var(--color-signal-watch)]/10",
-  disconnected: "text-[color:var(--color-signal-critical)] bg-[color:var(--color-signal-critical)]/10",
+  connected:
+    "text-[color:var(--color-signal-stable)] bg-[color:var(--color-signal-stable)]/10",
+  pending_reads:
+    "text-[color:var(--color-signal-watch)] bg-[color:var(--color-signal-watch)]/10",
+  disconnected:
+    "text-[color:var(--color-signal-critical)] bg-[color:var(--color-signal-critical)]/10",
   unpaired: "text-ink-400 bg-ink-100/60",
 };
 
@@ -261,7 +269,13 @@ function DashboardMockup() {
                 strokeWidth="1.2"
                 strokeLinecap="round"
               />
-              <circle cx="6" cy="6" r="2" stroke="currentColor" strokeWidth="1.2" />
+              <circle
+                cx="6"
+                cy="6"
+                r="2"
+                stroke="currentColor"
+                strokeWidth="1.2"
+              />
             </svg>
             kinova.health/portal/triage
           </div>
@@ -285,7 +299,9 @@ function DashboardMockup() {
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[color:var(--color-signal-stable)]">
                 <span
                   className="absolute inset-0 rounded-full bg-[color:var(--color-signal-stable)]"
-                  style={{ animation: "landing-pulse-ring 2s ease-out infinite" }}
+                  style={{
+                    animation: "landing-pulse-ring 2s ease-out infinite",
+                  }}
                 />
               </span>
               Streaming

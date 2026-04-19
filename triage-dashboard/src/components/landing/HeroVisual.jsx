@@ -54,7 +54,11 @@ const VELOCITY_TONE = {
 function HeroVisual() {
   const focusVitals = [
     { label: "HR", value: FOCUS.clinicalPayload.vitals.heartBeat, unit: "bpm" },
-    { label: "SpO₂", value: FOCUS.clinicalPayload.vitals.bloodOxygen, unit: "%" },
+    {
+      label: "SpO₂",
+      value: FOCUS.clinicalPayload.vitals.bloodOxygen,
+      unit: "%",
+    },
     { label: "Stress", value: FOCUS.clinicalPayload.vitals.stress, unit: "" },
   ];
 
@@ -93,7 +97,9 @@ function HeroVisual() {
               <span className="relative inline-flex h-2 w-2 rounded-full bg-[color:var(--color-signal-stable)]">
                 <span
                   className="absolute inset-0 rounded-full bg-[color:var(--color-signal-stable)]"
-                  style={{ animation: "landing-pulse-ring 2s ease-out infinite" }}
+                  style={{
+                    animation: "landing-pulse-ring 2s ease-out infinite",
+                  }}
                 />
               </span>
               <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-400">
