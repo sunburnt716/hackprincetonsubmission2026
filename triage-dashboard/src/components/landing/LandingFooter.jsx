@@ -32,9 +32,6 @@ function LandingFooter() {
           <Link to={APP_ROUTES.LOGIN} className="hover:text-ink-800">
             Hospital Login
           </Link>
-          <Link to={APP_ROUTES.LOGIN} className="hover:text-ink-800">
-            Patient Login
-          </Link>
         </div>
       </div>
     </footer>

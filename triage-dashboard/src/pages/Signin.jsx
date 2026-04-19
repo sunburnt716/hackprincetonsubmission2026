@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ACCOUNT_TYPE_OPTIONS, ACCOUNT_TYPES } from "../constants/accountTypes";
+import { ACCOUNT_TYPES } from "../constants/accountTypes";
 import { APP_ROUTES } from "../constants/routes";
 import { submitLogin } from "../services/authService";
 import "./Auth.css";
 
 const INITIAL_STATE = {
-  accountType: ACCOUNT_TYPES.PATIENT,
   email: "",
   password: "",
 };
@@ -22,10 +21,6 @@ function Login() {
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((current) => ({ ...current, [name]: value }));
-  };
-
-  const handleAccountTypeSelect = (accountType) => {
-    setFormData((current) => ({ ...current, accountType }));
   };
 
   const validate = () => {
@@ -58,7 +53,7 @@ function Login() {
 
     try {
       const response = await submitLogin({
-        accountType: formData.accountType,
+        accountType: ACCOUNT_TYPES.STAFF,
         email: formData.email.trim(),
         password: formData.password,
       });
@@ -67,12 +62,7 @@ function Login() {
         `Endpoint: ${response.endpoint} | Login ID: ${response.payload.loginId}`,
       );
 
-      if (formData.accountType === ACCOUNT_TYPES.STAFF) {
-        navigate(APP_ROUTES.STAFF_HOME);
-        return;
-      }
-
-      navigate(APP_ROUTES.PATIENT_HOME);
+      navigate(APP_ROUTES.STAFF_HOME);
     } catch (loginError) {
       const message =
         loginError instanceof Error
@@ -86,10 +76,10 @@ function Login() {
   return (
     <main className="auth-shell">
       <section className="auth-card" aria-labelledby="login-title">
-        <h1 id="login-title">Log-in</h1>
+        <h1 id="login-title">Hospital Staff Log-in</h1>
         <p className="auth-subtext">
-          Frontend-only auth placeholder for patient and hospital staff
-          accounts.
+          Sign in with your hospital staff credentials to access the triage
+          portal.
         </p>
 
         <nav className="auth-tabs" aria-label="Authentication pages">
@@ -100,28 +90,6 @@ function Login() {
             Sign-up
           </Link>
         </nav>
-
-        <div
-          className="auth-type-toggle"
-          role="group"
-          aria-label="Account type selector"
-        >
-          <p>Account Type</p>
-          <div className="auth-type-options">
-            {ACCOUNT_TYPE_OPTIONS.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                className={`auth-type-option ${
-                  formData.accountType === option.value ? "selected" : ""
-                }`}
-                onClick={() => handleAccountTypeSelect(option.value)}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-        </div>
 
         <form className="auth-form" onSubmit={handleSubmit} noValidate>
           <div className="auth-field--full">
@@ -151,9 +119,6 @@ function Login() {
           {note ? <p className="auth-note">{note}</p> : null}
 
           <div className="auth-actions">
-            <Link className="auth-link" to={APP_ROUTES.SIGNUP}>
-              Need an account? Sign-up
-            </Link>
             <Link className="auth-link" to={APP_ROUTES.FORGOT_PASSWORD}>
               Forgot password?
             </Link>
