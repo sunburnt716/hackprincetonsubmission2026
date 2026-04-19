@@ -3,7 +3,6 @@ from __future__ import annotations
 from fastapi import APIRouter, HTTPException, status
 
 from app.ble.pipeline import BleIngestionPipeline
-from app.models.vitals import AckState
 from app.schemas.ble_ingestion import BleIngestionRequest, BleIngestionResponse
 
 router = APIRouter(prefix="/api/v1/ingestion", tags=["ingestion"])
@@ -25,11 +24,6 @@ async def ingest_ble_frames(payload: BleIngestionRequest):
             device_id=payload.device_id,
             payload=raw_payload,
             timestamp=payload.timestamp,
-            essential_vitals_only=payload.essential_vitals_only,
-            buffered_during_dead_zone=payload.buffered_during_dead_zone,
-            backfill_batch_id=payload.backfill_batch_id,
-            retry_count=payload.retry_count,
-            ack_state=AckState(payload.ack_state),
         )
     except ValueError as exc:
         raise HTTPException(
