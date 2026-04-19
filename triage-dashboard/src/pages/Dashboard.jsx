@@ -133,7 +133,7 @@ function DashboardContent() {
     <main className="dashboard-shell">
       <header className="dashboard-header">
         <div>
-          <h1>Kinovo Waiting Room</h1>
+          <h1>Kinova Waiting Room</h1>
           <p>
             Signed in as <strong>{session.fullName || session.email}</strong> (
             {session.accountType})

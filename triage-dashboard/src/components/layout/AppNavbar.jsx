@@ -59,7 +59,7 @@ function AppNavbar() {
   return (
     <header className="app-navbar" aria-label="Primary navigation">
       <Link className="app-navbar__brand" to={APP_ROUTES.ROOT}>
-        Kinovo Triage
+        Kinova Triage
       </Link>
 
       <div className="app-navbar__profile">
